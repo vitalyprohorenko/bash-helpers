@@ -1,4 +1,4 @@
-# <img src="_img/icon_bash.png"/> BASH-Helpers
+# <img src=".img/icon_bash.png"/> BASH-Helpers
 
 <br />
 
@@ -34,34 +34,34 @@
 
 ### Список библиотек
 
-<img src="_img/icon_g.png"/> Релиз
+<img src=".img/icon_g.png"/> Релиз
 
-<img src="_img/icon_y.png"/> beta-версия
+<img src=".img/icon_y.png"/> beta-версия
 
-<img src="_img/icon_r.png"/> В разработке
+<img src=".img/icon_r.png"/> В разработке
 
 ------
 
-- <img src="_img/icon_y.png"/> `1th-template`
+- <img src=".img/icon_y.png"/> `1th-template`
 
   ​	Заготовка sh-скрипта с минимальной обвязкой
 
-- <img src="_img/icon_y.png"/> `control-key`
+- <img src=".img/icon_y.png"/> `control-key`
 
   ​	Работа с stdin, считывание клавиш для управления и навигации
 
-- <img src="_img/icon_y.png"/> `menu-creator`
+- <img src=".img/icon_y.png"/> `menu-creator`
 
   ​	Создание псевдо-графического меню
 
-- <img src="_img/icon_r.png"/> `config-ini`
+- <img src=".img/icon_r.png"/> `config-ini`
 
   ​	Работа с ini-файлами, считывание и сохранение настроек
 
-- <img src="_img/icon_r.png"/> `json-parser`
+- <img src=".img/icon_r.png"/> `json-parser`
 
   ​	Использование строки в формате json как объекта
 
-- <img src="_img/icon_r.png"/> `app-controller`
+- <img src=".img/icon_r.png"/> `app-controller`
 
   ​	Обертка для гибкого запуска приложений
