@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# ============================================================================
+# Основные настройки
+ckeyLocked=""	# Исключенные группы и клавиши для обработки
+# ============================================================================
+
+## Типы клавиш
+##   0-9			numbers
+##   a-z			enkeys
+##   а-я			rukeys
+##   esc, enter и т.д.		controls
+##   стрелки			arrows
+
+# Внутренние переменные
+ckeyResult=""; ckeyRType=""
+
+## Начать считывание кнопки, результат выполнения
+## появится в $ckeyResult (нажатая клавиша) $ckeyRType (тип клавиши)
+##   ckeyRun
+function ckeyRun() {
+local li0; local li1; local li2; local li3; local li4
+local ifs=$IFS
+
+IFS=""; echo -en "\e[30;40m"
+read -srn1 li0
+read -srn1 -t0.01 li1
+read -srn1 -t0.01 li2
+read -srn1 -t0.01 li3
+read -srn1 -t0.01 li4
+
+case "${li0}${li1}${li2}${li3}${li4}" in
+  [0-9]*)            ckeyRType="numbers";     ckeyResult="$li0";;
+  [a-zA-Z]*)         ckeyRType="enkeys";      ckeyResult="$li0";;
+  [а-яА-Я]*)         ckeyRType="rukeys";      ckeyResult="$li0";;
+  $'\x1b')           ckeyRType="controls";    ckeyResult="escape";;
+  $'\x1b\x3b')       ckeyRType="controls";    ckeyResult="f-key1";;
+  $'\x1b\x1b\x3b')   ckeyRType="controls";    ckeyResult="f-key2";;
+  $'\x1b\x5b\x41')   ckeyRType="arrows";      ckeyResult="up";;
+  $'\x1b\x5b\x42')   ckeyRType="arrows";      ckeyResult="down";;
+  $'\x1b\x5b\x43')   ckeyRType="arrows";      ckeyResult="right";;
+  $'\x1b\x5b\x44')   ckeyRType="arrows";      ckeyResult="left";;
+  $'\x20')           ckeyRType="controls";    ckeyResult="space";;
+  '')                ckeyRType="controls";    ckeyResult="enter";;
+  *)                 ckeyRType="-";           ckeyResult="-";;
+esac
+IFS=$ifs; echo -en "\e[0m"
+if [ $(echo $ckeyRType | grep -ciE "$ckeyLocked") -ge 1 ]; then ckeyRType="-"; ckeyResult="-"; fi
+if [ $(echo $ckeyResult | grep -ciE "$ckeyLocked") -ge 1 ]; then ckeyRType="-"; ckeyResult="-"; fi
+}
