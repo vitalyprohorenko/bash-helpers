@@ -5,19 +5,22 @@
 ckeyLocked=""	# Исключенные группы и клавиши для обработки
 # ============================================================================
 
+##
 ## Типы клавиш
 ##   0-9			numbers
 ##   a-z			enkeys
 ##   а-я			rukeys
 ##   esc, enter и т.д.		controls
 ##   стрелки			arrows
+##
 
 # Внутренние переменные
 ckeyResult=""; ckeyRType=""
 
 ## Начать считывание кнопки, результат выполнения
-## появится в $ckeyResult (нажатая клавиша) $ckeyRType (тип клавиши)
+## появится в $ckeyResult (нажатая клавиша) и $ckeyRType (тип клавиши)
 ##   ckeyRun
+##
 function ckeyRun() {
 local li0; local li1; local li2; local li3; local li4
 local ifs=$IFS
