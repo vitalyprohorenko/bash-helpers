@@ -1,5 +1,7 @@
 *.tmp
 *.temp
-4delete/*
 
-(wip)*/*
+!*
+!*/*
+*temp*
+*temp*/*
