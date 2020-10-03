@@ -26,7 +26,7 @@ h[${#h[@]}]=""
 if [ -r "$cfgFileConf" ]; then source "$cfgFileConf"; fi
 
 # Inner variables
-
+_test_message="TEST MESSAGE"
 
 # Load libraries
 for _file in "$cfgDirLib/*.shlib"; do
@@ -116,7 +116,7 @@ $cfgActive && lock
 while true; do
   read -n1 -t1 -s
   if [ "$REPLY" == "q" ] || [ "$REPLY" == "Q" ]
-    then break; else log -file "TEST MESSAGE"; fi
+    then break; else log -file $_test_message; fi
 done
 # === Dummy cycle =========================================
 
