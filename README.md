@@ -30,6 +30,8 @@
 
 > <img src="_img/icon_g.png"/> Релиз | <img src="_img/icon_y.png"/> beta-версия | <img src="_img/icon_r.png"/> В разработке
 
+<br />
+
 - <img src="_img/icon_y.png"/>`control-key`
 
   ​	Работа с stdin, считывание клавиш для управления и навигации
