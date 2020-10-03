@@ -29,7 +29,9 @@
 ### Список библиотек
 
 <img src="_img/icon_g.png"/> Релиз
+
 <img src="_img/icon_y.png"/> beta-версия
+
 <img src="_img/icon_r.png"/> В разработке
 
 ------
