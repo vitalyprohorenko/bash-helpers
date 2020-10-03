@@ -42,7 +42,7 @@
 
 ------
 
-- <img src="_img/icon_r.png"/> `1th-template`
+- <img src="_img/icon_y.png"/> `1th-template`
 
   ​	Заготовка sh-скрипта с минимальной обвязкой
 
