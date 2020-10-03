@@ -1,14 +1,14 @@
-#  <img src="bash.png"/> BASH-Helpers
+# <img src="_img/icon_bash.png"/> BASH-Helpers
 
 
 
-###### ***Набор вспомогательных функций для облегчения созданияя bash-скриптов***
+###### ***Набор вспомогательных функций для облегчения создания bash-скриптов***
 
 
 
 ### Подключение и применение
 
-Для использования нужно импортировать в свой скрипт или консоль командой source
+Для использования нужно импортировать в свой скрипт или консоль командой `source`
 
 `source ./имя_библиотеки.shlib` или `. ./имя_библиотеки.shlib`
 
@@ -28,18 +28,20 @@
 
 ### Список библиотек
 
-- `control-key`
+> <img src="_img/icon_g.png"/> Релиз | <img src="_img/icon_y.png"/> beta-версия | <img src="_img/icon_r.png"/> В разработке
+
+- <img src="_img/icon_y.png"/>`control-key`
 
   ​	Работа с stdin, считывание клавиш для управления и навигации
 
-- `menu-creator`
+- <img src="_img/icon_y.png"/>`menu-creator`
 
   ​	Создание псевдо-графического меню
 
-- `config-ini`
+- <img src="_img/icon_r.png"/>`config-ini`
 
   ​	Работа с ini-файлами, считывание и сохранение настроек
 
-- `json-parser`
+- <img src="_img/icon_r.png"/>`json-parser`
 
   ​	Использование строки в формате json как объекта
