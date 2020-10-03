@@ -32,6 +32,10 @@
 
 ------
 
+- <img src="_img/icon_r.png"/>`1th-template`
+
+  ​	Заготовка sh-скрипта с минимальной обвязкой
+
 - <img src="_img/icon_y.png"/>`control-key`
 
   ​	Работа с stdin, считывание клавиш для управления и навигации
@@ -47,3 +51,7 @@
 - <img src="_img/icon_r.png"/>`json-parser`
 
   ​	Использование строки в формате json как объекта
+
+- <img src="_img/icon_r.png"/>`app-controller`
+
+  ​	Обертка для гибкого запуска приложений
