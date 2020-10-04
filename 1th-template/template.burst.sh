@@ -8,7 +8,7 @@
 cfgActive=false						# Flag for "danger" functions
 cfgFileConf="$cfgDir/settings.cfg"			# Override config file
 cfgFileLog="$cfgDir/logfile.txt"			# Log-file for log() function
-cfgFileLock="$cfgDir/$0.lock"				# Lock-file for run control
+cfgFileLock="$cfgDir/$(basename $0).lock"		# Lock-file for run control
 cfgDirLib="$cfgDir"					# Librarys path
 cfgSecondSig=false					# Use USR2 instead of USR1 for timer
 
@@ -66,7 +66,7 @@ function lock() {
   case "$1" in
     "l"|"lock") echo "$$" >"$_lockFile";;
     "u"|"unlock") rm -f "$_lockFile"; lock exit;;
-    "e"|"exit") return;;
+    "e"|"exit") [ ${#LINES} -gt 0 ] && return || exit;;
     "f"|"tstfile") if [ -s "$_lockFile" ]; then echo true; else echo false; fi;;
     "p"|"tstproc")
       if [ -r "$_lockFile" ]; then

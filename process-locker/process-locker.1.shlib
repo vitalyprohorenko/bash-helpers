@@ -3,7 +3,7 @@
 # ============================================================================
 # Основные настройки
 _lockKillSleep=5				# Сколько секунд ждать перед kill -9'
-_lockFile="${0}.lock"				# Имя файла для контроля блокировки
+_lockFile="$(basename $0).lock"			# Имя файла для контроля блокировки
 # ============================================================================
 
 ## Манипуляции с блокировкой, без аргументов вызовет 'lock lock'
@@ -20,7 +20,7 @@ function lock() {
   case "$1" in
     "l"|"lock") echo "$$" >"$_lockFile";;
     "u"|"unlock") rm -f "$_lockFile"; lock exit;;
-    "e"|"exit") exit 0;;
+    "e"|"exit") [ ${#LINES} -gt 0 ] && return || exit;;
     "f"|"tstfile") if [ -s "$_lockFile" ]; then echo true; else echo false; fi;;
     "p"|"tstproc")
       if [ -r "$_lockFile" ]; then

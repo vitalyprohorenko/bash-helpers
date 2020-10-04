@@ -26,7 +26,7 @@ case $1 in
       fi
     fi
   ;;
-  "off") if [ 0$_timerPid -gt 99 ]; then kill -9 $_timerPid; fi;;
+  "off") if [ 0$_timerPid -gt 0 ]; then kill -9 $_timerPid; fi;;
   "_thread")
     if [[ $2 =~ ^[0-9]+ ]]; then
       while [ $(ps ax | grep -cE "[ ]*$2[ ]+") -ge 1 ]; do
