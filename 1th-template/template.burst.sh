@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # BASH-Source folder selector
-[ ${#PROMPT_COMMAND} -gt 0 ] && cfgDir="$(dirname $BASH_ARGV)" || cfgDir="$(dirname $0)"
+[ ${#PS1} -gt 0 ] && cfgDir="$(pwd)" || cfgDir="$(dirname $0)"
 
 # =============================== WORK HEADER ===============================
 # Configuration
@@ -68,7 +68,7 @@ function lock() {
   case "$1" in
     "l"|"lock") echo "$$" >"$_lockFile";;
     "u"|"unlock") rm -f "$_lockFile"; lock exit;;
-    "e"|"exit") exit 0;;
+    "e"|"exit") return 0;;
     "u"|"unlock") rm -f "$_lockFile"; lock exit;;
     "f"|"tstfile") if [ -s "$_lockFile" ]; then echo true; else echo false; fi;;
     "p"|"tstproc")
@@ -126,7 +126,7 @@ function testFunction() {
 # ============================ END USER FUNCTION=============================
 
 # BASH-Source loader stopper
-if [ ${#PROMPT_COMMAND} -gt 0 ];  then log -file "Functions loaded!"; return; fi
+if [ ${#PS1} -gt 0 ]; then log -file "Functions loaded!"; return 0; fi
 
 # Processing cli-arguments
 while true; do
