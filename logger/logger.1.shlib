@@ -8,11 +8,11 @@ _logPrefix=""					# Префикс сообщений
 
 ## Запись сообщения в файл или вывод на экран
 ##   log [-f|-d|-n|-p] "string"
-##     string			- сообщение
-##     -f|-file			- вывод в stdin вместо файла
-##     -d|-date			- убарть из вывода дату
-##     -n|-newline		- не выводить \n в конце сообщения
-##     -p|-prefix		- не выводить префикс
+##     string				- сообщение
+##     -f|-file				- вывод в stdin вместо файла
+##     -d|-date				- убрать из вывода дату
+##     -n|-newline			- не выводить \n в конце сообщения
+##     -p|-prefix			- не выводить префикс
 ##
 function log() {
 if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then echo -n "" >$_logFilel; return; fi
@@ -27,7 +27,7 @@ while true; do
     "-p"|"-prefix") shift; _logTPrefix="";;
     *) if $_logStd
           then echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}"
-	  else echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile
+          else echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile
        fi; break;;
   esac
 done

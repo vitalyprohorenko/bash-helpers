@@ -38,11 +38,10 @@ _menuShift=0
 ## Конфигурация меню
 ##   menuSet option
 ##   options:
-##     color type int		- установить int цвет в type тип шаблона
-##     header [@pos] "string"	- добавить строку заголовка или заменить в позиции @pos
-##     spaces "string"		- установить строку-заполнитель
-##     rsleep int		- установить паузу таймера обновления
-##     shift int		- установить вертикальный сдвиг меню
+##     color type int			- установить int цвет в type тип шаблона
+##     header [@pos] "string"		- добавить строку заголовка или заменить в позиции @pos
+##     spaces "string"			- установить строку-заполнитель
+##     shift int			- установить вертикальный сдвиг меню
 ##
 function menuSet() {
 local tmp
@@ -73,8 +72,8 @@ esac
 
 ## Добавить или заменить строку меню в буфере
 ##   menuAdd [@int] string
-##   @int			- указатель на строку
-##   string			- строка меню
+##     @int				- указатель на строку
+##     string				- строка меню
 ##
 function menuAdd() {
 if [[ $1 =~ ^@[0-9]+$ ]]; then
@@ -127,10 +126,9 @@ echo -ne "\e[0;0f\e[0m"
 }
 
 ## Навигация по меню
-##   menuNavi option
-##   options:
-##     u|up			- указатель на строку выше
-##     d|down			- указатель на строку ниже
+##   menuNavi u|d
+##     u|up				- указатель на строку выше
+##     d|down				- указатель на строку ниже
 ##
 function menuNavi() {
 if $_menuEnabled; then
@@ -155,10 +153,9 @@ fi
 }
 
 ## Получить текущий выбраный пункт
-##   menuGet option
-##   options:
-##     n|name			- вернуть выбранную строку
-##     i|id			- вернуть выбранную позицию
+##   menuGet n|i
+##     n|name				- вернуть выбранную строку
+##     i|id				- вернуть выбранную позицию
 ##
 function menuGet() {
 case $1 in
@@ -168,8 +165,8 @@ esac
 }
 
 ## Обновить меню и подстроить при изменении ШхВ
-##   menuRefresh option
-##     f|full			- игнорировать ШхВ и обновить принудительно
+##   menuRefresh [f]
+##     f|full				- игнорировать ШхВ и обновить принудительно
 ##
 function menuRefresh() {
 if $_menuEnabled; then
@@ -179,12 +176,10 @@ if $_menuEnabled; then
 fi
 }
 
-## Очистить буфер
-##   menuClear option
-##   options:
-##     header			- очистка буфера заголовка
-##     bufer			- очистка буфера меню и экрана, остановка таймера
-##     ""			- очистка всех буферов (завершение работы)
+## Очистить буфер, при использовании без параметров очищает все буферы
+##   menuClear [header|bufer]
+##     header				- очистка буфера заголовка
+##     bufer				- очистка буфера меню и экрана, остановка таймера
 ##
 function menuClear() {
 if [ "$1" == "" ]; then
@@ -194,7 +189,7 @@ else
     "header") _menuHeader=();;
     "bufer") _menuBufer=(); _menuPointer=0; _menuEnabled=false
              trap - SIGWINCH    
-	     sleep 0.2; echo -ne "\e[0m\e[2J"; clear;;
+             sleep 0.2; echo -ne "\e[0m\e[2J"; clear;;
   esac
 fi
 }

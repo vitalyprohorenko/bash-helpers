@@ -13,8 +13,8 @@ _lockFile="${0}.lock"				# Имя файла для контроля блоки�
 ##     e|exit				- Выход
 ##     u|unlock				- Удаление файла блокировки, затем lock exit
 ##     k|kill				- Убить процесс с pid из файла, затем lock unlock
-##     f|tstfile			- Возвращает true если файл существует и больше нуля байт)
-##     p|tstproc			- Возвращает true если процесс с pid из файла блокировки существует)
+##     f|tstfile			- Возвращает true если файл существует и больше нуля байт
+##     p|tstproc			- Возвращает true если процесс с pid из файла блокировки существует
 function lock() {
   local _lockPid
   case "$1" in
@@ -26,7 +26,7 @@ function lock() {
       if [ -r "$_lockFile" ]; then
         _lockPid=$(cat -- "$_lockFile")
         if [ $(ps ax | grep -cE "^[ ]*$_lockPid[ ]+") -ge 1 ]
-	  then echo true; else echo false
+          then echo true; else echo false
         fi
         else echo false
       fi
@@ -35,9 +35,9 @@ function lock() {
       if [ $(lock tstfile) ] && [ $(lock tstproc) ]; then
         _lockPid=$(if [ -r "$_lockFile" ]; then cat "$_lockFile"; fi)
         kill $_lockPid
-	sleep $_lockKillSleep
-	[ $(lock tstproc) ] && kill -9 $_lockPid
-	lock unlock
+        sleep $_lockKillSleep
+        [ $(lock tstproc) ] && kill -9 $_lockPid
+        lock unlock
       fi
     ;;
     *) lock lock;;
