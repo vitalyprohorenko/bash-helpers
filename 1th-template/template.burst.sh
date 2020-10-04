@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # BASH-Source folder selector
-[ ${#PS1} -gt 0 ] && cfgDir="$(pwd)" || cfgDir="$(dirname $0)"
+[ ${#LINES} -gt 0 ] && cfgDir="$(pwd)" || cfgDir="$(dirname $0)"
 
 # =============================== WORK HEADER ===============================
 # Configuration
@@ -66,8 +66,7 @@ function lock() {
   case "$1" in
     "l"|"lock") echo "$$" >"$_lockFile";;
     "u"|"unlock") rm -f "$_lockFile"; lock exit;;
-    "e"|"exit") return 0;;
-    "u"|"unlock") rm -f "$_lockFile"; lock exit;;
+    "e"|"exit") return;;
     "f"|"tstfile") if [ -s "$_lockFile" ]; then echo true; else echo false; fi;;
     "p"|"tstproc")
       if [ -r "$_lockFile" ]; then
@@ -106,7 +105,7 @@ case $1 in
       fi
     fi
   ;;
-  "off") if [ 0$_timerPid -gt 99 ]; then kill -9 $_timerPid; fi;;
+  "off") if [ 0$_timerPid -gt 0 ]; then kill -9 $_timerPid; fi;;
   "_thread")
     if [[ $2 =~ ^[0-9]+ ]]; then
       while [ $(ps ax | grep -cE "[ ]*$2[ ]+") -ge 1 ]; do
@@ -124,7 +123,9 @@ function testFunction() {
 # ============================ END USER FUNCTION=============================
 
 # BASH-Source loader stopper
-if [ ${#PS1} -gt 0 ]; then log -file "Functions loaded!"; return 0; fi
+if [ ${#LINES} -gt 0 ]
+  then log -file "Functions loaded!"; return
+fi
 
 # Processing cli-arguments
 while true; do
@@ -139,21 +140,22 @@ if $(lock tstproc); then log -file "Second instance detected"; lock exit; fi
 if $(lock tstfile); then log -file "Previous launch was unsuccessful"; lock unlock; fi
 
 # Create traps
-trap 'break' SIGINT					# Pressed CTRL+C
-trap 'break' SIGTSTP					# Pressed CTRL+Z
-trap 'break' SIGHUP					# Hands-up
+trap 'testRun=false' SIGINT				# Pressed CTRL+C
+trap 'testRun=false' SIGTSTP				# Pressed CTRL+Z
+trap 'testRun=false' SIGHUP				# Hands-up
 #trap '' SIGQUIT					# QUIT Signal
-trap 'break' SIGTERM					# Request for exit
+trap 'testRun=false' SIGTERM				# Request for exit
 #trap '' EXIT						# Before exit
 
 $cfgActive && lock
 # ================================ WORK BODY ================================
-testMessage="TEST MESSAGE"
+$cfgActive && testMessage="Run in active mode" || testMessage="Run in debug mode"
+testRun=true
 timer on testFunction
-while true; do
+while $testRun; do
   read -n1 -t1 -s
   if [ "$REPLY" == "q" ] || [ "$REPLY" == "Q" ]
-    then timer off; break
+    then timer off; testRun=false
     else sleep 0.25
   fi
 done

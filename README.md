@@ -38,7 +38,7 @@
 
 ------
 
-- <img src="/.img/icon_g.png"/><img src="/.img/icon_g.png"/> [`1th-template`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/1th-template)
+- <img src="/.img/icon_y.png"/><img src="/.img/icon_g.png"/> [`1th-template`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/1th-template)
 
 	Заготовка sh-скрипта с минимальной обвязкой
 
