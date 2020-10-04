@@ -1,0 +1,45 @@
+#!/bin/bash
+##
+# ============================================================================
+# Основные настройки
+_lockKillSleep=5				# Сколько секунд ждать перед kill -9'
+_lockFile="${0}.lock"				# Имя файла для контроля блокировки
+# ============================================================================
+
+## Манипуляции с блокировкой, без аргументов вызовет 'lock lock'
+##   lock [l|e|u|f|p|k]
+##   аргументы:
+##     l|lock				- Создать файл блокировки
+##     e|exit				- Выход
+##     u|unlock				- Удаление файла блокировки, затем lock exit
+##     k|kill				- Убить процесс с pid из файла, затем lock unlock
+##     f|tstfile			- Возвращает true если файл существует и больше нуля байт)
+##     p|tstproc			- Возвращает true если процесс с pid из файла блокировки существует)
+function lock() {
+  local _lockPid
+  case "$1" in
+    "l"|"lock") echo "$$" >"$_lockFile";;
+    "u"|"unlock") rm -f "$_lockFile"; lock exit;;
+    "e"|"exit") exit 0;;
+    "f"|"tstfile") if [ -s "$_lockFile" ]; then echo true; else echo false; fi;;
+    "p"|"tstproc")
+      if [ -r "$_lockFile" ]; then
+        _lockPid=$(cat -- "$_lockFile")
+        if [ $(ps ax | grep -cE "^[ ]*$_lockPid[ ]+") -ge 1 ]
+	  then echo true; else echo false
+        fi
+        else echo false
+      fi
+    ;;
+    "k"|"kill")
+      if [ $(lock tstfile) ] && [ $(lock tstproc) ]; then
+        _lockPid=$(if [ -r "$_lockFile" ]; then cat "$_lockFile"; fi)
+        kill $_lockPid
+	sleep $_lockKillSleep
+	[ $(lock tstproc) ] && kill -9 $_lockPid
+	lock unlock
+      fi
+    ;;
+    *) lock lock;;
+  esac
+}

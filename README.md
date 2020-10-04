@@ -44,37 +44,36 @@
 
 - <img src=".img/icon_y.png"/> `1th-template`
 
-  ​	Заготовка sh-скрипта с минимальной обвязкой
+	Заготовка sh-скрипта с минимальной обвязкой
 
 - <img src=".img/icon_y.png"/> `control-key`
 
-  ​	Работа с stdin, считывание клавиш для управления и навигации
+	Работа с stdin, считывание клавиш для управления и навигации
 
 - <img src=".img/icon_y.png"/> `menu-creator`
 
-  ​	Создание псевдо-графического меню
+  Создание псевдо-графического меню
+
+- <img src=".img/icon_y.png"/> `logger`
+
+	Удобная работа с лог-файлом и stdout
+
+- <img src=".img/icon_y.png"/> `async-timer`
+
+  Асинхронный таймер
+
+- <img src=".img/icon_y.png"/> `process-locker`
+
+  Облегчёная работа с .lock файлом
 
 - <img src=".img/icon_r.png"/> `config-ini`
 
-  ​	Работа с ini-файлами, считывание и сохранение настроек
+  Работа с ini-файлами, считывание и сохранение настроек
 
 - <img src=".img/icon_r.png"/> `json-parser`
 
-  ​	Использование строки в формате json как объекта
+  Использование строки в формате json как объекта
 
 - <img src=".img/icon_r.png"/> `app-controller`
 
-  ​	Обертка для гибкого запуска приложений
-  
-- <img src=".img/icon_r.png"/> `logger`
-
-  ​	Удобная работа с лог-файлом и stdout
-
-- <img src=".img/icon_r.png"/> `async-timer`
-
-  ​	Асинхронный таймер
-
-- <img src=".img/icon_r.png"/> `process-locker`
-
-  ​	Облегчёная работа с .lock файлом
-
+  Обертка для гибкого запуска приложений

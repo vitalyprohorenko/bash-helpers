@@ -1,0 +1,39 @@
+#!/bin/bash
+##
+# ============================================================================
+# Основные настройки
+_timerSleep=1				# Интервал отправки сигнала приложению
+_timerSig=1				# Номер сигнала SIGUSR
+# ============================================================================
+
+# Внутренние переменные
+_timerPid=0
+
+## Асинхронный однопоточный таймер
+##   timer [off|on callback]
+##   options:
+##     on callback			- Включить таймер для функции callback
+##     off				- Выключить таймер
+
+function timer() {
+
+case $1 in
+  "on")
+    if [ "$*" != "" ]; then
+      if [ 0$_timerPid -eq 0 ]; then shift
+        eval trap '$*' USR${_timerSig}
+        timer _thread $$ &
+        _timerPid=$!
+      fi
+    fi
+  ;;
+  "off") if [ 0$_timerPid -gt 99 ]; then kill -9 $_timerPid; fi;;
+  "_thread")
+    if [[ $2 =~ ^[0-9]+ ]]; then
+      while [ $(ps ax | grep -cE "[ ]*$2[ ]+") -ge 1 ]; do
+        kill -SIGUSR${_timerSig} $2; sleep $_timerSleep
+      done
+    fi
+  ;;
+esac  
+}

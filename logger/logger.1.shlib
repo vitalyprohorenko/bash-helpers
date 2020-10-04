@@ -1,0 +1,34 @@
+#!/bin/bash
+##
+# ============================================================================
+# Основные настройки
+_logFile="logfile.txt"				# Имя файла для записи логов
+_logPrefix=""					# Префикс сообщений
+# ============================================================================
+
+## Запись сообщения в файл или вывод на экран
+##   log [-f|-d|-n|-p] "string"
+##     string			- сообщение
+##     -f|-file			- вывод в stdin вместо файла
+##     -d|-date			- убарть из вывода дату
+##     -n|-newline		- не выводить \n в конце сообщения
+##     -p|-prefix		- не выводить префикс
+##
+function log() {
+if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then echo -n "" >$_logFilel; return; fi
+local _logDate="$(date "+%Y-%m-%d %H:%M:%S") "
+local _logLine="\n"; local _logStd=false; _logMsg=""
+local _logTPrefix="${_logPrefix} "
+while true; do
+  case "$1" in
+    "-f"|"-file") shift; _logStd=true;;
+    "-d"|"-date") shift; _logDate="";;
+    "-n"|"-newline") shift; _logLine="";;
+    "-p"|"-prefix") shift; _logTPrefix="";;
+    *) if $_logStd
+          then echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}"
+	  else echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile
+       fi; break;;
+  esac
+done
+}
