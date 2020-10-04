@@ -112,6 +112,12 @@ case $1 in
 esac  
 }
 
+# ============================== USER FUNCTIONS =============================
+function testFunction() {
+  log -file "$testMessage"
+}
+# ============================ END USER FUNCTION=============================
+
 # BASH-Source loader stopper
 if [ ${#PROMPT_COMMAND} -gt 0 ];  then log -file "Functions loaded!"; return; fi
 
@@ -138,13 +144,7 @@ trap 'break' SIGTERM	# Request for exit
 $cfgActive && lock
 # ================================ WORK BODY ================================
 testMessage="TEST MESSAGE"
-
-function testFunction() {
-  log -file "$testMessage"
-}
-
 timer on testFunction
-
 while true; do
   read -n1 -t1 -s
   if [ "$REPLY" == "q" ] || [ "$REPLY" == "Q" ]
@@ -153,7 +153,5 @@ while true; do
   fi
 done
 log -file "Shuting down in 1.5 sec"; sleep 1.5
-
 # ============================== END WORK BODY ==============================
 $cfgActive && lock unlock || lock exit
-
