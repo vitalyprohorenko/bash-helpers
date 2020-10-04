@@ -1,4 +1,4 @@
-# <img src="/.img/icon_bash.png"/> 1-th script
+# <img src="/.img/icon_bash.png"/> 1-th template script
 
 <br />
 
