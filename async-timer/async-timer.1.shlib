@@ -16,7 +16,6 @@ _timerPid=0
 ##     off				- Выключить таймер
 
 function timer() {
-
 case $1 in
   "on")
     if [ "$*" != "" ]; then

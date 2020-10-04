@@ -40,17 +40,21 @@ done
 
 # Log to file
 _logFile=$cfgFileLog					# Filename for write logs
+_logPrefix=""						# Log-prefix
 function log() {
+if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then echo -n "" >$_logFilel; return; fi
 local _logDate="$(date "+%Y-%m-%d %H:%M:%S") "
 local _logLine="\n"; local _logStd=false; _logMsg=""
+local _logTPrefix="${_logPrefix} "
 while true; do
   case "$1" in
     "-f"|"-file") shift; _logStd=true;;
     "-d"|"-date") shift; _logDate="";;
     "-n"|"-newline") shift; _logLine="";;
+    "-p"|"-prefix") shift; _logTPrefix="";;
     *) if $_logStd
-          then echo -ne "${_logDate}${*}${_logLine}"
-	  else echo -ne "${_logDate}${*}${_logLine}" >>$_logFile
+          then echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}"
+	  else echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile
        fi; break;;
   esac
 done
@@ -63,12 +67,13 @@ function lock() {
   local _lockPid
   case "$1" in
     "l"|"lock") echo "$$" >"$_lockFile";;
+    "u"|"unlock") rm -f "$_lockFile"; lock exit;;
     "e"|"exit") exit 0;;
     "u"|"unlock") rm -f "$_lockFile"; lock exit;;
     "f"|"tstfile") if [ -s "$_lockFile" ]; then echo true; else echo false; fi;;
     "p"|"tstproc")
       if [ -r "$_lockFile" ]; then
-        _lockPid=$(cat "$_lockFile")
+        _lockPid=$(cat -- "$_lockFile")
         if [ $(ps ax | grep -cE "^[ ]*$_lockPid[ ]+") -ge 1 ]
 	  then echo true; else echo false
         fi
@@ -95,14 +100,16 @@ _timerPid=0
 function timer() {
 case $1 in
   "on")
-    if [ 0$_timerPid -eq 0 ]; then shift
-      eval trap '$*' USR${_timerSig}
-      timer thread $$ &
-      _timerPid=$!
+    if [ "$*" != "" ]; then
+      if [ 0$_timerPid -eq 0 ]; then shift
+        eval trap '$*' USR${_timerSig}
+        timer _thread $$ &
+        _timerPid=$!
+      fi
     fi
-    ;;
+  ;;
   "off") if [ 0$_timerPid -gt 99 ]; then kill -9 $_timerPid; fi;;
-  "thread")
+  "_thread")
     if [[ $2 =~ ^[0-9]+ ]]; then
       while [ $(ps ax | grep -cE "[ ]*$2[ ]+") -ge 1 ]; do
         kill -SIGUSR${_timerSig} $2; sleep $_timerSleep
