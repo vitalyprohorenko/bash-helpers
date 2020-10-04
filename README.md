@@ -18,9 +18,7 @@
 
 `source ./имя_библиотеки.shlib` или `. ./имя_библиотеки.shlib`
 
-Справочная информация интегрирована в библиотеки с двойным комментарием `##`
-
-и просматривается командой `cat имя_библиотеки.shlib | grep -E "^##"`
+Справочная информация интегрирована в библиотеки с двойным комментарием `##` и просматривается командой `cat имя_библиотеки.shlib | grep -E "^##"`
 
 <br />
 
@@ -34,7 +32,11 @@
 
 ### Список библиотек
 
-<img src="/.img/icon_g.png"/> Релиз || <img src="/.img/icon_y.png"/> beta-версия || <img src="/.img/icon_r.png"/> В разработке
+<img src="/.img/icon_g.png"/> Релиз
+
+<img src="/.img/icon_y.png"/> beta-версия
+
+<img src="/.img/icon_r.png"/> В разработке
 
 ------
 
@@ -60,7 +62,7 @@
 
 - <img src="/.img/icon_g.png"/> [`process-locker`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/process-locker)
 
-  Облегчёная работа с .lock файлом
+  Облегчённая работа с .lock файлом
 
 - <img src="/.img/icon_r.png"/> `config-ini`
 
