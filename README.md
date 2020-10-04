@@ -38,27 +38,27 @@
 
 ------
 
-- <img src="/.img/icon_y.png"/> [`1th-template`](/tree/master/1th-template)
+- <img src="/.img/icon_y.png"/> [`1th-template`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/1th-template)
 
 	Заготовка sh-скрипта с минимальной обвязкой
 
-- <img src="/.img/icon_y.png"/> `control-key`
+- <img src="/.img/icon_y.png"/> [`control-key`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/control-key)
 
 	Работа с stdin, считывание клавиш для управления и навигации
 
-- <img src="/.img/icon_y.png"/> `menu-creator`
+- <img src="/.img/icon_y.png"/> [`menu-creator`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/menu-creator)
 
   Создание псевдо-графического меню
 
-- <img src="/.img/icon_y.png"/> `logger`
+- <img src="/.img/icon_y.png"/> [`logger`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/logger)
 
 	Удобная работа с лог-файлом и stdout
 
-- <img src="/.img/icon_y.png"/> `async-timer`
+- <img src="/.img/icon_y.png"/> [`async-timer`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/async-timer)
 
   Асинхронный таймер
 
-- <img src="/.img/icon_y.png"/> `process-locker`
+- <img src="/.img/icon_y.png"/> [`process-locker`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/process-locker)
 
   Облегчёная работа с .lock файлом
 
