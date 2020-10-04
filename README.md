@@ -34,15 +34,11 @@
 
 ### Список библиотек
 
-<img src="/.img/icon_g.png"/> Релиз
-
-<img src="/.img/icon_y.png"/> beta-версия
-
-<img src="/.img/icon_r.png"/> В разработке
+<img src="/.img/icon_g.png"/> Релиз || <img src="/.img/icon_y.png"/> beta-версия || <img src="/.img/icon_r.png"/> В разработке
 
 ------
 
-- <img src="/.img/icon_y.png"/> `1th-template`
+- <img src="/.img/icon_y.png"/> [`1th-template`](tree/master/1th-template)
 
 	Заготовка sh-скрипта с минимальной обвязкой
 
