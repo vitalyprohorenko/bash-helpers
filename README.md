@@ -65,3 +65,16 @@
 - <img src=".img/icon_r.png"/> `app-controller`
 
   ​	Обертка для гибкого запуска приложений
+  
+- <img src=".img/icon_r.png"/> `logger`
+
+  ​	Удобная работа с лог-файлом и stdout
+
+- <img src=".img/icon_r.png"/> `async-timer`
+
+  ​	Асинхронный таймер
+
+- <img src=".img/icon_r.png"/> `process-locker`
+
+  ​	Облегчёная работа с .lock файлом
+
