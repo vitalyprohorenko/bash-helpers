@@ -48,14 +48,14 @@
 
 ### Список версий
 
-<img src=".img/icon_g.png"/> Релиз || <img src=".img/icon_y.png"/> beta-версия || <img src=".img/icon_r.png"/> В разработке
+<img src="/.img/icon_g.png"/> Релиз || <img src="/.img/icon_y.png"/> beta-версия || <img src="/.img/icon_r.png"/> В разработке
 
 ------
 
-- <img src=".img/icon_g.png"/> `ave`
+- <img src="/.img/icon_g.png"/> `ave`
 
 	Первая версия
 
-- <img src=".img/icon_y.png"/> `burst`
+- <img src="/.img/icon_y.png"/> `burst`
 
 	Добавлен асинхронный таймер, вынесены настройки из функций
