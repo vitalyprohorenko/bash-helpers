@@ -5,12 +5,12 @@
 
 # =============================== WORK HEADER ===============================
 # Configuration
-cfgActive=false					# Flag for "danger" functions
-cfgFileConf="$cfgDir/settings.cfg"		# Override config file
-cfgFileLog="$cfgDir/logfile.txt"		# Log-file for log() function
-cfgFileLock="$cfgDir/$0.lock"			# Lock-file for run control
-cfgDirLib="$cfgDir"				# Librarys path
-cfgSecondSig=false				# Use USR2 instead of USR1 for timer
+cfgActive=false						# Flag for "danger" functions
+cfgFileConf="$cfgDir/settings.cfg"			# Override config file
+cfgFileLog="$cfgDir/logfile.txt"			# Log-file for log() function
+cfgFileLock="$cfgDir/$0.lock"				# Lock-file for run control
+cfgDirLib="$cfgDir"					# Librarys path
+cfgSecondSig=false					# Use USR2 instead of USR1 for timer
 
 # Help message
 unset h
@@ -54,7 +54,7 @@ while true; do
     "-p"|"-prefix") shift; _logTPrefix="";;
     *) if $_logStd
           then echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}"
-	  else echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile
+          else echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile
        fi; break;;
   esac
 done
@@ -75,7 +75,7 @@ function lock() {
       if [ -r "$_lockFile" ]; then
         _lockPid=$(cat -- "$_lockFile")
         if [ $(ps ax | grep -cE "^[ ]*$_lockPid[ ]+") -ge 1 ]
-	  then echo true; else echo false
+          then echo true; else echo false
         fi
         else echo false
       fi
@@ -84,9 +84,9 @@ function lock() {
       if [ $(lock tstfile) ] && [ $(lock tstproc) ]; then
         _lockPid=$(if [ -r "$_lockFile" ]; then cat "$_lockFile"; fi)
         kill $_lockPid
-	sleep $_lockKillSleep
-	[ $(lock tstproc) ] && kill -9 $_lockPid
-	lock unlock
+        sleep $_lockKillSleep
+        [ $(lock tstproc) ] && kill -9 $_lockPid
+        lock unlock
       fi
     ;;
     *) lock lock;;
@@ -141,12 +141,12 @@ if $(lock tstproc); then log -file "Second instance detected"; lock exit; fi
 if $(lock tstfile); then log -file "Previous launch was unsuccessful"; lock unlock; fi
 
 # Create traps
-trap 'break' SIGINT	# Pressed CTRL+C
-trap 'break' SIGTSTP	# Pressed CTRL+Z
-trap 'break' SIGHUP	# Hands-up
-#trap '' SIGQUIT	# QUIT Signal
-trap 'break' SIGTERM	# Request for exit
-#trap '' EXIT		# Before exit
+trap 'break' SIGINT					# Pressed CTRL+C
+trap 'break' SIGTSTP					# Pressed CTRL+Z
+trap 'break' SIGHUP					# Hands-up
+#trap '' SIGQUIT					# QUIT Signal
+trap 'break' SIGTERM					# Request for exit
+#trap '' EXIT						# Before exit
 
 $cfgActive && lock
 # ================================ WORK BODY ================================

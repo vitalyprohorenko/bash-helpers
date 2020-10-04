@@ -50,7 +50,7 @@ while true; do
     "-n"|"-newline") shift; _logLine="";;
     *) if $_logStd
           then echo -ne "${_logDate}${*}${_logLine}"
-	  else echo -ne "${_logDate}${*}${_logLine}" >>$cfgFileLog
+          else echo -ne "${_logDate}${*}${_logLine}" >>$cfgFileLog
        fi; break;;
   esac
 done
@@ -67,7 +67,7 @@ function lock() {
       if [ -r "$cfgFileLock" ]; then
         _lockPid=$(cat "$cfgFileLock")
         if [ $(ps ax | grep -cE "^[ ]*$_lockPid[ ]+") -ge 1 ]
-	  then echo true; else echo false
+          then echo true; else echo false
         fi
         else echo false
       fi
@@ -76,9 +76,9 @@ function lock() {
       if [ $(lock tstfile) ] && [ $(lock tstproc) ]; then
         _lockPid=$(if [ -r "$cfgFileLock" ]; then cat "$cfgFileLock"; fi)
         kill $_lockPid
-	sleep $cfgKillSleep
-	[ $(lock tstproc) ] && kill -9 $_lockPid
-	lock unlock
+        sleep $cfgKillSleep
+        [ $(lock tstproc) ] && kill -9 $_lockPid
+        lock unlock
       fi
     ;;
     *) lock lock;;
