@@ -123,9 +123,7 @@ function testFunction() {
 # ============================ END USER FUNCTION=============================
 
 # BASH-Source loader stopper
-if [ ${#LINES} -gt 0 ]
-  then log -file "Functions loaded!"; return
-fi
+if [ ${#LINES} -gt 0 ]; then log -file "Functions loaded!"; return; fi
 
 # Processing cli-arguments
 while true; do
