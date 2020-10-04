@@ -2,8 +2,7 @@
 
 # ==================================================================================
 # Основные настройки
-# ВНИМАНИЕ! Модуль использует прерывание
-_menuSecondSig=false			# Использовать SIGUSR2 вместо SIGUSR1
+# ВНИМАНИЕ! Модуль использует прерывание SIGWINCH
 _menuSkin=(0 14 0 14 0 7 0 0 14)	# Стандартное оформление
 _menuSpaces="                         "	# Строка-заполнитель (влияет на ширину меню)
 # ==================================================================================
@@ -33,10 +32,9 @@ _menuSpaces="                         "	# Строка-заполнитель (�
 ##
 
 # Внутренние переменные
-${_menuSecondSig} && _menuSecondSig=0 || _menuSecondSig=1
 _menuHeader=(); _menuBufer=(); _menuPointer=0; _menuEnabled=false
 _menuWin[0]=$(tput lines); _menuWin[1]=$(tput cols)
-_menuShift=0; _menuTpid=0; _menuTsleep=1
+_menuShift=0
 
 ## Конфигурация меню
 ##   menuSet option
@@ -71,7 +69,6 @@ case "$1" in
   ;;
   "spaces") shift; _menuSpaces=$*;;
   "shift") if [[ $2 =~ ^[0-9]+$ ]]; then _menuShift=$2; fi;;
-  "rsleep") if [[ $2 =~ ^[0-9]+$ ]]; then _menuTsleep=$2; fi;;
 esac
 }
 
@@ -124,9 +121,8 @@ fi
 done
 
 if ! ${_menuEnabled}; then
+  trap "menuRefresh" SIGWINCH
   _menuEnabled=true
-  _menuTimer on $$ &
-  _menuTpid=$!
 fi
 echo -ne "\e[0;0f\e[0m"
 }
@@ -197,10 +193,9 @@ if [ "$1" == "" ]; then
 else
   case "$1" in
     "header") _menuHeader=();;
-    "bufer") _menuBufer=(); _menuPointer=0
-             _menuEnabled=false; _menuTimer off
-	     sleep 0.2
-             echo -ne "\e[0m\e[2J"; clear;;
+    "bufer") _menuBufer=(); _menuPointer=0; _menuEnabled=false
+             trap - SIGWINCH    
+	     sleep 0.2; echo -ne "\e[0m\e[2J"; clear;;
   esac
 fi
 }
@@ -233,17 +228,3 @@ echo -ne "${clr}"
 echo -n "${tmp}${_menuSpaces:${#tmp}}"
 echo -ne "\e[0m"
 }
-
-function _menuTimer() {
-case $1 in
-  "on")
-    if [[ $2 =~ ^[0-9]+ ]]; then while true; do
-      kill -SIGUSR${_menuSecondSig} $2; sleep $_menuTsleep
-    done; fi
-  ;;
-  "off") kill -9 $_menuTpid;;
-esac  
-}
-
-# Ловушка для таймера
-trap "menuRefresh" USR${_menuSecondSig}
