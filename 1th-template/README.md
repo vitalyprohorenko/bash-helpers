@@ -52,7 +52,7 @@
 
 ------
 
-- <img src="/.img/icon_y.png"/> `ave`
+- <img src="/.img/icon_y.png"/> `ave` (удалено)
 
 	Первая версия
 
