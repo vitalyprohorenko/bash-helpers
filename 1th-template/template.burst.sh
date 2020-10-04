@@ -33,9 +33,7 @@ done
 # === Framework functions ===
 # Just show array on stdout
 function showHelp() {
-for (( i=0; $i<${#h[@]}; i++ )); do
-log -file -date "${h[$i]}"
-done
+  for (( i=0; $i<${#h[@]}; i++ )); do log -file -date "${h[$i]}"; done
 }
 
 # Log to file
