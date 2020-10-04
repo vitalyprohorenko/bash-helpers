@@ -39,7 +39,7 @@ _menuShift=0
 ## Конфигурация меню
 ##   menuSet option
 ##   options:
-##     color type color		- установить color цвет в type тип шаблона
+##     color type int		- установить int цвет в type тип шаблона
 ##     header [@pos] "string"	- добавить строку заголовка или заменить в позиции @pos
 ##     spaces "string"		- установить строку-заполнитель
 ##     rsleep int		- установить паузу таймера обновления
@@ -73,8 +73,8 @@ esac
 }
 
 ## Добавить или заменить строку меню в буфере
-##   menuAdd [@row] string
-##   @row			- указатель на строку
+##   menuAdd [@int] string
+##   @int			- указатель на строку
 ##   string			- строка меню
 ##
 function menuAdd() {

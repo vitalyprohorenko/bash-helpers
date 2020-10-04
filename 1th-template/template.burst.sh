@@ -90,7 +90,7 @@ function lock() {
 
 # Async timer
 _timerSleep=1						# Send signal interval (sec)
-_timerSig=$(${cfgSecondSig} && echo 0 || echo 1)	# SIGUSR1 or SIGUSR2 select
+_timerSig=$(${cfgSecondSig} && echo 2 || echo 1)	# SIGUSR1 or SIGUSR2 select
 _timerPid=0
 function timer() {
 case $1 in
