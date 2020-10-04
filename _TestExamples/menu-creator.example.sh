@@ -1,5 +1,5 @@
 #!/bin/bash
-source "menu-creator/$(ls menu-creator --color=never --file-type -tq1 | tail -n1)" 
+source "../menu-creator/$(ls ../menu-creator --color=never --file-type -tq1 | tail -n1)" 
 
 menuSet header "#################"
 menuSet header "#################"
