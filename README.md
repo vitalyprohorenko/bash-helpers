@@ -38,7 +38,7 @@
 
 ------
 
-- <img src="/.img/icon_y.png"/> [`1th-template`](tree/master/1th-template)
+- <img src="/.img/icon_y.png"/> [`1th-template`](/tree/master/1th-template)
 
 	Заготовка sh-скрипта с минимальной обвязкой
 
