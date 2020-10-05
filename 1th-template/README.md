@@ -49,8 +49,6 @@
 
 ### Список версий
 
-<img src="/.img/icon_g.png"/> Релиз || <img src="/.img/icon_y.png"/> beta-версия || <img src="/.img/icon_r.png"/> В разработке
-
 ------
 
 - <img src="/.img/icon_g.png"/> `burst`
