@@ -40,7 +40,7 @@ function showHelp() {
 _logFile=$cfgFileLog					# Filename for write logs
 _logPrefix=""						# Log-prefix
 function log() {
-if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then echo -n "" >$_logFilel; return; fi
+if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then echo -n "" >$_logFile; return; fi
 local _logDate="$(date "+%Y-%m-%d %H:%M:%S") "
 local _logLine="\n"; local _logStd=false; _logMsg=""
 local _logTPrefix="${_logPrefix} "
