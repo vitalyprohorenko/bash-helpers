@@ -1,6 +1,4 @@
-# <img src="/.img/icon_bash.png"/> 1-th template script
-
-<br />
+# <img src="/.img/icon_bash.png"/> BASH-Helpers [скрипты]
 
 ### Список скриптов
 

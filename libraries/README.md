@@ -1,4 +1,4 @@
-# <img src="/.img/icon_bash.png"/> BASH-Helpers
+# <img src="/.img/icon_bash.png"/> BASH-Helpers [библиотеки]
 
 ### Список библиотек
 
