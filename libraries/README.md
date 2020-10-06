@@ -1,7 +1,5 @@
 # <img src="/.img/icon_bash.png"/> BASH-Helpers [библиотеки]
 
-### Список библиотек
-
 ------
 
 - <img src="/.img/icon_g.png"/> [`control-key`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/control-key)
