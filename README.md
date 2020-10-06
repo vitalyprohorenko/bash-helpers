@@ -2,15 +2,27 @@
 
 <br />
 
-> Набор вспомогательных функций для облегчения создания bash-скриптов
->
-> Каждая библиотека построена на функциях и может быть вызвана как из скрипта, так и в консоли
->
-> Некоторые библиотеки используют прерывания (SIGUSR, SIGWINCH и т.п.)
+## Набор для облегчения разработки bash-скриптов
 
 <br />
 
-### Подключение и применение
+### Шаблоны скриптов
+
+Находятся в каталоге [`scripts`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/scripts)
+
+Шаблонные скрипты с минимальным наполнением
+
+<br />
+
+### Библиотеки
+
+Расположены в каталоге [`libraries`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries), скрипты с примерами использования в каталоге [`libraries/.tests`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/.tests)
+
+Каждая библиотека построена на функциях и может быть вызвана как из скрипта, так и в консоли
+
+Некоторые библиотеки используют прерывания (SIGUSR, SIGWINCH и т.п.)
+
+##### Подключение и применение
 
 Библиотекам не обязательно давать права на запуск (`chmod +x`), права на запуск должны быть у импортирующего скрипта
 
@@ -22,14 +34,6 @@
 
 <br />
 
-### Файлы и каталоги
-
-Путь к библиотекам: `имя_библиотеки/имя_библиотеки.version.shlib`
-
-Примеры использования: `.tests/имя_библиотеки.example.sh`
-
-<br />
-
 ### Специальные метки
 
 <img src="/.img/icon_g.png"/> Релиз
@@ -37,45 +41,3 @@
 <img src="/.img/icon_y.png"/> beta-версия
 
 <img src="/.img/icon_r.png"/> В разработке
-
-<br />
-
-### Список библиотек
-
-------
-
-- <img src="/.img/icon_g.png"/> [`1th-template`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/1th-template)
-
-	Заготовка sh-скрипта с минимальной обвязкой
-
-- <img src="/.img/icon_g.png"/> [`control-key`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/control-key)
-
-	Работа с stdin, считывание клавиш для управления и навигации
-
-- <img src="/.img/icon_g.png"/> [`menu-creator`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/menu-creator)
-
-  Создание псевдо-графического меню
-
-- <img src="/.img/icon_g.png"/> [`logger`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/logger)
-
-	Удобная работа с лог-файлом и stdout
-
-- <img src="/.img/icon_g.png"/> [`async-timer`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/async-timer)
-
-  Асинхронный таймер
-
-- <img src="/.img/icon_g.png"/> [`process-locker`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/process-locker)
-
-  Облегчённая работа с .lock файлом
-
-- <img src="/.img/icon_r.png"/> `config-ini`
-
-  Работа с ini-файлами, считывание и сохранение настроек
-
-- <img src="/.img/icon_r.png"/> `json-parser`
-
-  Использование строки в формате json как объекта
-
-- <img src="/.img/icon_r.png"/> `app-controller`
-
-  Обертка для гибкого запуска приложений
