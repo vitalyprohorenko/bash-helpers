@@ -1,0 +1,47 @@
+#!/bin/bash
+##
+# ============================================================================
+# Основные настройки
+_logFile="logfile.txt"				# Имя файла для записи логов
+_logPrefix=" "					# Префикс сообщений
+_logDefault=stdout				# Стандартный поток file или stdout
+# ============================================================================
+
+## Запись сообщения в файл или вывод на экран
+##   log [-c] [-o|-d|-n|-p] "string"
+##     -c|-clear			- очистить стандартный поток вывода функции
+##     -o|-out [file|stdout]		- поток вывода, инвертировать если не указан поток
+##     -d|-date				- убрать из вывода дату
+##     -n|-newline			- не выводить \n в конце сообщения
+##     -p|-prefix			- не выводить префикс
+##     string				- сообщение
+##
+function log() {
+local _logMsg=""; local _logLine="\n"
+local _logDate="$(date "+%Y-%m-%d %H:%M:%S")"
+local _logStd=$([ "$_logDefault" == "file" ] && _logStd=false || _logStd=true)
+
+if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then if $_logStd
+  then clear; return
+  else echo -n "" >$_logFile; return
+fi;fi
+
+while true; do
+  case "$1" in
+    "-d"|"-date") shift; _logDate="";;
+    "-n"|"-newline") shift; _logLine="";;
+    "-p"|"-prefix") shift; _logPrefix="";;
+    "-o"|"-out")
+      case $2 in
+        "file") shift 2; _logStd=false;;
+        "stdout") shift 2; _logStd=true;;
+	*) shift; _logStd=$([ "$_logDefault" == "file" ] && _logStd=true || _logStd=false);;
+      esac
+    ;;
+    *) if $_logStd
+          then echo -ne "${_logDate}${_logPrefix}${*}${_logLine}"
+          else echo -ne "${_logDate}${_logPrefix}${*}${_logLine}" >>$_logFile
+       fi; break;;
+  esac
+done
+}

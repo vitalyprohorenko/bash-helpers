@@ -26,9 +26,9 @@ h[${#h[@]}]=""
 if [ -r "$cfgFileConf" ]; then source "$cfgFileConf"; fi
 
 # Load libraries
-for _file in "$cfgDirLib/*.shlib"; do
-  if [ -s "$_file" ] && [ -r "$_file" ]; then source "$_file"; fi
-done
+for _file in "$(ls "$cfgDirLib" --color=never --file-type --hide-control-chars --escape -1)"
+  do if [ -s "${cfgDirLib}/${_file}" ] && [ -r "${cfgDirLib}/${_file}" ]
+    then source "${cfgDirLib}/${_file}"; fi; done
 
 # === Framework functions ===
 # Just show array on stdout

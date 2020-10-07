@@ -1,4 +1,4 @@
-# <img src="/.img/icon_bash.png"/> 1-th template script
+# <img src="/.img/icon_bash.png"/> BASH-Helpers [1th-template]
 
 <br />
 
