@@ -8,11 +8,11 @@
 
   Создание псевдо-графического меню
 
-- <img src="/.img/icon_y.png"/> [`logger`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/logger)
+- <img src="/.img/icon_b.png"/> [`logger`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/logger)
 
   Удобная работа с лог-файлом и stdout
 
-- <img src="/.img/icon_y.png"/> [`async-timer`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/async-timer)
+- <img src="/.img/icon_b.png"/> [`async-timer`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/async-timer)
 
   Асинхронный таймер
 
