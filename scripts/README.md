@@ -3,3 +3,7 @@
 - <img src="/.img/icon_g.png"/> [`1th-template`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/scripts/1th-template)
 
   Шаблон-пустышка с минимумом функционала
+
+- <img src="/.img/icon_r.png"/> `service-controller`
+
+  Заготовка скрипта-службы
