@@ -6,7 +6,7 @@
 
 - <img src="/.img/icon_y.png"/> `logger.2.shlib`
 
-	Добавлена переменная `_logDefault=file|stdout` для определения стандартного маршрута и опция `-o|-out [file|stdout]` для его разового инвертирования
+	Добавлена возможность выбрать маршрут по умолчанию `file` или `stdout` и его временное переключение
 
 - <img src="/.img/icon_g.png"/> `logger.1.shlib` 
 
