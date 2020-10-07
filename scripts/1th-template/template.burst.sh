@@ -14,12 +14,12 @@ cfgSecondSig=false					# Use USR2 instead of USR1 for timer
 
 # Help message
 unset h
-h[${#h[@]}]="This is help strings"
-h[${#h[@]}]="for echo with -h arg"
-h[${#h[@]}]=""
-h[${#h[@]}]="Just add lines as you need"
-h[${#h[@]}]="with h[\${#h[@]}]= prefix"
-h[${#h[@]}]=""
+h+=("This is help strings")
+h+=("for echo with -h arg")
+h+=("")
+h+=("Just add lines as you need")
+h+=("with h+=(\"STRING\") syntax")
+h+=("")
 # ============================= END WORK HEADER =============================
 
 # Override config

@@ -12,7 +12,7 @@
 
   Удобная работа с лог-файлом и stdout
 
-- <img src="/.img/icon_g.png"/> [`async-timer`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/async-timer)
+- <img src="/.img/icon_y.png"/> [`async-timer`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/async-timer)
 
   Асинхронный таймер
 
@@ -31,3 +31,4 @@
 - <img src="/.img/icon_r.png"/> `app-controller`
 
   Обертка для гибкого запуска приложений
+
