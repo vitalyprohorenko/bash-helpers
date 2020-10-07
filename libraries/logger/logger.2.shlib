@@ -7,14 +7,19 @@ _logPrefix=" "					# Префикс сообщений
 _logDefault=stdout				# Стандартный поток file или stdout
 # ============================================================================
 
+## Потоки вывода для функции
+##   f|file				- запись данных в файл из настройки _logFile
+##   s|stdout				- вывод на экран
+##
+
 ## Запись сообщения в файл или вывод на экран
 ##   log [-c] [-o|-d|-n|-p] "string"
-##     -c|-clear			- очистить стандартный поток вывода функции
-##     -o|-out [file|stdout]		- поток вывода, если не указан поток - используется stdout
+##     -c|-clear [dst]			- очистить dst поток вывода функции либо очистить поток по умолчанию
+##     -o|-out [dst] 			- поток вывода, если не указан поток - используется stdout
 ##     -d|-date				- убрать из вывода дату
 ##     -n|-newline			- не выводить \n в конце сообщения
 ##     -p|-prefix			- не выводить префикс
-##     string				- сообщение
+##     "string"				- сообщение
 ##
 function log() {
 local _logMsg=""; local _logLine="\n"
@@ -32,16 +37,16 @@ while true; do
     "-n"|"-newline") shift; _logLine="";;
     "-p"|"-prefix") shift; _logPrefix="";;
     "-o"|"-out")
-      case "$2" in
-        "file") shift 2; _logStd="file";;
-        "stdout") shift 2; _logStd="stdout";;
-	*) shift; _logStd="stdout";;
-      esac
+      if [[ "$2" =~ ^(f|file|s|stdout)$ ]]
+        then shift 2; _logStd="$2"
+        else shift; _logStd="stdout"
+      fi
     ;;
     *)
       case $_logStd in
-        "stdout") echo -ne "${_logDate}${_logPrefix}${*}${_logLine}";;
-        "file") echo -ne "${_logDate}${_logPrefix}${*}${_logLine}" >>$_logFile;;
+        "f"|"file") echo -ne "${_logDate}${_logPrefix}${*}${_logLine}" >>$_logFile;;
+        "s"|"stdout"|*) echo -ne "${_logDate}${_logPrefix}${*}${_logLine}";;
+        #*) echo -ne "${_logDate}${_logPrefix}${*}${_logLine}";;
       esac
       break
     ;;
