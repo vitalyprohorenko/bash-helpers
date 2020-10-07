@@ -50,10 +50,11 @@
 
 ------
 
-- <img src="/.img/icon_g.png"/> `burst`
+- <img src="/.img/icon_g.png"/> `beatrice`
 
 	Добавлен асинхронный таймер, вынесены настройки из функций
 
-- <img src="/.img/icon_y.png"/> `ave` (удалено)
+- <img src="/.img/icon_y.png"/> `ava` (удалено)
 
 	Первая версия
+
