@@ -31,4 +31,3 @@
 - <img src="/.img/icon_r.png"/> `app-controller`
 
   Обертка для гибкого запуска приложений
-
