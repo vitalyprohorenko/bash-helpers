@@ -36,8 +36,9 @@
 
 ### Специальные метки
 
-<img src="/.img/icon_g.png"/> Релиз
+<img src="/.img/icon_g.png"/> Есть доступна версия
 
-<img src="/.img/icon_y.png"/> beta-версия
+<img src="/.img/icon_y.png"/> Есть доступная версия, разработка продолжается
 
-<img src="/.img/icon_r.png"/> В разработке
+<img src="/.img/icon_r.png"/> Доступной для скачивания версии нет
+

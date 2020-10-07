@@ -8,7 +8,7 @@
 
   Создание псевдо-графического меню
 
-- <img src="/.img/icon_g.png"/> [`logger`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/logger)
+- <img src="/.img/icon_y.png"/> [`logger`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/logger)
 
   Удобная работа с лог-файлом и stdout
 
