@@ -1,6 +1,6 @@
 # <img src="/.img/icon_bash.png"/> BASH-Helpers [logger]
 
-### Удобная работа с лог-файлом и stdout
+Удобная работа с лог-файлом и stdout
 
 ------
 
