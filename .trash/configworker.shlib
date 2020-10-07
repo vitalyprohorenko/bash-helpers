@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# $_cfgSS - метка начала/конца секции
+# $cfgResult - результат выполнения
+#
+cfgResult=""; cfgPointer=0; cfgLoaded=false
+_cfgSS="@"; _cfgBufer=(); _cfgPa=-1; _cfgPb=-1
+
+# Загрузить filename в буфер
+#   cfgLoad filename
+#
+function cfgLoad() {
+local i; cfgUnload
+if [ -r $1 ]; then readarray _cfgBufer <$1; fi
+if [ ${#_cfgBufer[@]} -gt 0 ]; then
+  for ((i=0; i<${#_cfgBufer[@]}; i++)); do
+    _cfgBufer[$i]="$(echo "${_cfgBufer[$i]}" | tr -sd "\n" "")"
+  done; cfgLoaded=true
+else cfgUnload
+fi
+} 
+
+# Очистить буфер
+#   cfgUnload
+#
+function cfgUnload() {
+_cfgBufer=(); _cfgPa=-1; _cfgPb=-1
+cfgPointer=0; cfgLoaded=false; cfgResult=""
+}
+
+#FIXME
+# Установка указателя на начало секции
+# Если section и subsection пустые - поиск ближайшей секции
+#   cfgSet [pos] [section]
+#     pos		стартовая позиция для поиска
+#     section		строка для поиска
+#			если section не указан - просто перемещает указатель
+function cfgSet() {
+if $cfgLoaded; then
+  local findstr=""; _cfgPa=-1; _cfgPb=-1; cfgPointer=0; cfgResult=""
+  if [[ $1 =~ ^[0-9]+$ ]]; then cfgPointer=$1; shift; fi
+  if [ "${*}" == "" ]; then 
+    if [ $cfgPointer -ge $_cfgPb ]; then cfgPointer=$_cfgPa; else let cfgPointer+=1; fi
+    return
+  fi
+  while true; do
+    if [ $cfgPointer -ge ${#_cfgBufer[@]} ]; then break; fi
+    findstr="^[ ]*${_cfgSS}.*"
+    if [[ ${_cfgBufer[$cfgPointer]} =~ $findstr && $_cfgPa -ge 0 ]]; then break; fi
+    findstr="^[ ]*${_cfgSS}${*}[ ]*\$"
+    if [[ ${_cfgBufer[$cfgPointer]} =~ $findstr && $_cfgPa -eq -1 ]]; then let _cfgPa=$cfgPointer+1; fi
+    let cfgPointer+=1
+  done
+  if [ $_cfgPa -ge 0 ]; then let _cfgPb=$cfgPointer-1; fi
+  cfgPointer=$_cfgPa
+fi
+}
+
+# Получить данные из буфера (конфигурации) и записать их в $cfgResult
+# если command не указан - интерпретируется как 'cfgGet line'
+#   cfgGet [command]
+#   commands:
+#     array array_name			загрузить всю секцию в массив array_name
+#     pos				вернуть текущую позицию указателя
+#     line [int|[-e] string]		вернуть строку на указателе
+#					если указан int - переместить указатель в позицию pos и вернуть строку
+#					если указан string - переместить указатель с поиском string в секции и вернуть строку
+#					если у string присутствует аргумент -e поиск идёт внутри строки (^.*string.*$)
+#     arg [-f] int [string]		вернуть int чать строки на указателе
+#					если указан string - вернуть часть строки, используя string как разделитель полей
+#					если указан аргумент -f не перемещать указатель после операции
+#
+function cfgGet() {
+if $cfgLoaded; then
+  case "$1" in
+    "arg" )
+      local fix=true; local pos=0
+      if [ "$2" == "-f" ]; then fix=false; shift; fi
+      if [[ "$2" =~ ^[0-9]+$ ]]; then
+        pos=$2
+        if [ "$3" == "" ]; then
+          cfgResult="$(echo "${_cfgBufer[$cfgPointer]}" | awk -v x=$pos '{print $(x)}')"
+        else
+          cfgResult="$(echo "${_cfgBufer[$cfgPointer]}" | awk -F "$3" -v x=$pos '{print $(x)}')"
+        fi
+      fi
+      if $fix; then if [ $cfgPointer -ge $_cfgPb ]
+        then let cfgPointer=$_cfgPa
+        else let cfgPointer+=1
+      fi; fi
+    ;;
+    "line" )
+      local str=""; local findstr=""
+      case $2 in
+        "") cfgResult=${_cfgBufer[$cfgPointer]}; if [ $cfgPointer -ge $_cfgPb ]; then cfgPointer=$_cfgPa; else let cfgPointer+=1; fi;;
+        ^[0-9]+$) cfgPointer=$2; cfgResult=${_cfgBufer[$cfgPointer]};;
+        *) shift
+          if [ "$1" == "-e" ]
+            then shift; findstr="^.*${*}.*\$"
+            else findstr="^${*}\$"; fi
+          for ((i=$_cfgPa; i<=$_cfgPb; i++)); do
+            if [[ "${_cfgBufer[$i]}" =~ $findstr ]]; then cfgResult="${_cfgBufer[$i]}"; break; fi
+          done
+        ;;
+      esac
+    ;;
+    "array")
+      if [ "$2" != "" ]; then
+        local tmp=0; unset $(echo $2)
+        for ((i=$_cfgPa; i<=$_cfgPb; i++)); do
+          eval $(echo $2)[$tmp]='${_cfgBufer[$i]}'; let tmp+=1
+        done
+      fi
+    ;;
+    "pos") cfgResult="${_cfgPa} ${cfgPointer} ${_cfgPb}";;
+    "") cfgGet line;;
+  esac
+fi
+}
