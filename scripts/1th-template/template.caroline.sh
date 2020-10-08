@@ -23,11 +23,11 @@ h+=("")
 if [ -r "$cfgFileConf" ]; then source "$cfgFileConf"; fi
 
 # Load libraries 
-for _file in $(find "$cfgDirLib" -regex ".*\.shlib" -type f -print); do
-  _fileN="$(basename ${_file})"
-  if [ -n "${_file}" ]; then _fileN="${_fileN}"; echo -n "[${_fileN}]	"
+for _file in $(find "$cfgDirLib" -regex ".*\.shlib" -type f -print | tr ' ' '?'); do
+  _fileN=$(basename "${_file}")
+  if [ -n "${_file}" ]; then _fileN="${_fileN}"; echo -n "[${_fileN}] "
     if [ -s "${_file}" ] && [ -r "${_file}" ]
-      then echo "Loading"; . "${_file}"; echo "[${_fileN}]	Loaded"
+      then echo "Loading"; . "${_file}"; echo "[${_fileN}] Loaded"
       else echo "Error"
     fi
   fi; unset _fileN
