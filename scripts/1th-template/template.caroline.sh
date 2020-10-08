@@ -127,7 +127,7 @@ case $1 in
     $_timerCallback "Binding [$2/$3sec] $4"
     _timerPTimer[$2]="$3"; _timerPExec[$2]="$4"
   ;;
-  "clear")
+  "unbind")
     if [[ "$2" =~ ^[_a-zA-Z0-9-]+$ ]]; then
       $_timerCallback "Unset $2"
       unset _timerPExec[$2]; unset _timerPCount[$2]; unset _timerPTimer[$2]
