@@ -36,33 +36,46 @@ for _file in $(find "$cfgDirLib" -regex ".*\.shlib" -type f -print); do
   fi; unset _fileN
 done
 
-return
-
 # === Framework functions ===
 # Just show array on stdout
 function showHelp() {
-  for (( i=0; $i<${#h[@]}; i++ )); do log -file -date "${h[$i]}"; done
+  for (( i=0; $i<${#h[@]}; i++ )); do log -out stdout -date "${h[$i]}"; done
 }
 
-#*UPDATE
 # Log to file
 _logFile=$cfgFileLog					# Filename for write logs
-_logPrefix=""						# Log-prefix
+_logPrefix=" "						# Default log-prefix
+_logDefault=file					# Default log-patch
 function log() {
-if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then echo -n "" >$_logFile; return; fi
-local _logDate="$(date "+%Y-%m-%d %H:%M:%S") "
-local _logLine="\n"; local _logStd=false; _logMsg=""
-local _logTPrefix="${_logPrefix} "
+local _logMsg=""; local _logLine="\n"
+local _logDate="$(date "+%Y-%m-%d %H:%M:%S")"
+local _logStd="$_logDefault"
+local _logOFilter='^(f|file|s|stdout)$'
+local _logTPrefix="$_logPrefix"
+
+if [ "$1" == "-c" ] || [ "$1" == "-clear" ]; then if $_logStd
+  then clear; return
+  else echo -n "" >$_logFile; return
+fi;fi
+
 while true; do
   case "$1" in
-    "-f"|"-file") shift; _logStd=true;;
-    "-d"|"-date") shift; _logDate="";;
-    "-n"|"-newline") shift; _logLine="";;
-    "-p"|"-prefix") shift; _logTPrefix="";;
-    *) if $_logStd
-          then echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}"
-          else echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile
-       fi; break;;
+    "-d"|"-date") _logDate=""; shift;;
+    "-n"|"-newline") _logLine=""; shift;;
+    "-p"|"-prefix") _logTPrefix="$2"; shift 2;;
+    "-o"|"-out")
+      if [[ "$2" =~ $_logOFilter ]]
+        then shift 2; _logStd="$2"
+        else shift; _logStd="stdout"
+      fi
+    ;;
+    *)
+      case $_logStd in
+        "f"|"file") echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}" >>$_logFile;;
+        "s"|"stdout"|*) echo -ne "${_logDate}${_logTPrefix}${*}${_logLine}";;
+      esac
+      break
+    ;;
   esac
 done
 }
@@ -129,12 +142,12 @@ esac
 
 # ============================== USER FUNCTIONS =============================
 function testFunction() {
-  log -file "$testMessage"
+  log -out "$testMessage"
 }
 # ============================ END USER FUNCTION=============================
 
 # BASH-Source loader stopper
-if [ ${#LINES} -gt 0 ]; then log -file "Functions loaded!"; return; fi
+if [ ${#LINES} -gt 0 ]; then log -out "Functions loaded!"; return; fi
 
 # Processing cli-arguments
 while true; do
@@ -145,8 +158,8 @@ while true; do
 done
 
 # Test for 2-nd instance
-if $(lock tstproc); then log -file "Second instance detected"; lock exit; fi
-if $(lock tstfile); then log -file "Previous launch was unsuccessful"; lock unlock; fi
+if $(lock tstproc); then log -out "Second instance detected"; lock exit; fi
+if $(lock tstfile); then log -out "Previous launch was unsuccessful"; lock unlock; fi
 
 # Create traps
 trap 'testRun=false' SIGINT				# Pressed CTRL+C
@@ -168,6 +181,6 @@ while $testRun; do
     else sleep 0.25
   fi
 done
-log -file "Shuting down in 1.5 sec"; sleep 1.5
+log -out "Shuting down in 1.5 sec"; sleep 1.5
 # ============================== END WORK BODY ==============================
 $cfgActive && lock unlock || lock exit

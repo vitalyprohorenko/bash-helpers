@@ -52,7 +52,7 @@
 
 - <img src="/.img/icon_y.png"/> `caroline`
 
-	Исправления кода
+	Исправления кода, обновление функций
 
 - <img src="/.img/icon_g.png"/> `beatrice`
 
