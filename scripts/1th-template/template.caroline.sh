@@ -1,8 +1,4 @@
 #!/bin/bash
-
-# BASH-Source folder selector
-[ ${#LINES} -gt 0 ] && cfgDir="$(pwd)" || cfgDir="$(dirname $0)"
-
 # =============================== WORK HEADER ===============================
 # Configuration
 cfgDir="$PWD"
