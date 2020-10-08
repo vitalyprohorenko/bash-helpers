@@ -18,6 +18,8 @@
 
 Расположены в каталоге [`libraries`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries), скрипты с примерами использования в каталоге [`libraries/.tests`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/.tests)
 
+Набор библиотек (фреймворков) с разным функционалом
+
 Каждая библиотека построена на функциях и может быть вызвана как из скрипта, так и в консоли
 
 Некоторые библиотеки используют прерывания (SIGUSR, SIGWINCH и т.п.)
