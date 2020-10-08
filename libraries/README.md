@@ -20,6 +20,14 @@
 
   Облегчённая работа с .lock файлом
 
+- <img src="/.img/icon_r.png"/> `lib-loader`
+
+  Автоматический загрузчик библиотек по файлу зависимостей
+
+- <img src="/.img/icon_r.png"/> `template-parser`
+
+  Обработчик шаблонов
+
 - <img src="/.img/icon_r.png"/> `config-ini`
 
   Работа с ini-файлами, считывание и сохранение настроек
