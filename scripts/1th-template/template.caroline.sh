@@ -5,6 +5,7 @@
 
 # =============================== WORK HEADER ===============================
 # Configuration
+cfgDir="$PWD"
 cfgActive=false						# Flag for "danger" functions
 cfgFileConf="$cfgDir/settings.cfg"			# Override config file
 cfgFileLog="$cfgDir/logfile.txt"			# Log-file for log() function
@@ -44,11 +45,10 @@ function showHelp() {
 
 # Log to file
 _logFile=$cfgFileLog					# Filename for write logs
-_logPrefix=" "						# Default log-prefix
 _logDefault=file					# Default log-patch
 function log() {
 local _logMsg=""; local _logLine="\n"
-local _logDate="$(date "+%Y-%m-%d %H:%M:%S")"
+local _logDate="$(date "+%Y-%m-%d %H:%M:%S") "
 local _logStd="$_logDefault"
 local _logOFilter='^(f|file|s|stdout)$'
 local _logTPrefix="$_logPrefix"
@@ -62,7 +62,7 @@ while true; do
   case "$1" in
     "-d"|"-date") _logDate=""; shift;;
     "-n"|"-newline") _logLine=""; shift;;
-    "-p"|"-prefix") _logTPrefix="$2"; shift 2;;
+    "-p"|"-prefix") _logTPrefix="$2 "; shift 2;;
     "-o"|"-out")
       if [[ "$2" =~ $_logOFilter ]]
         then shift 2; _logStd="$2"
@@ -115,7 +115,7 @@ function lock() {
 # Async timer
 _timerSleep=1						# Send signal interval (sec)
 _timerSig=$(${cfgSecondSig} && echo 2 || echo 1)	# SIGUSR1 or SIGUSR2 select
-_timerCallback=$(${cfgActive} && echo "false" || echo "log -o ")
+${cfgActive} && _timerCallback=false || _timerCallback='log -o -p [TIMER] '
 # Inner vars
 _timerPid=0; unset _timerPExec; unset _timerPTimer; unset _timerPCount
 declare -A _timerPExec; declare -A _timerPTimer; declare -A _timerPCount
@@ -151,7 +151,7 @@ case $1 in
   "off")
     if [ 0$_timerPid -gt 0 ]; then
       $_timerCallback "Timer is OFF"
-      kill -9 $_timerPid
+      kill $_timerPid >/dev/null 2>/dev/null
       trap - USR${_timerSig}
       _timerPid=0
     fi
@@ -169,9 +169,11 @@ case $1 in
     $_timerCallback "Starting timer-thread"
     if [[ $2 =~ ^[0-9]+ ]]; then
       while [ $(ps ax | grep -cE "[ ]*$2[ ]+") -ge 1 ]; do
-        kill -SIGUSR${_timerSig} $2; sleep $_timerSleep
+        kill -SIGUSR${_timerSig} $2 >/dev/null 2>/dev/null
+	sleep $_timerSleep
       done
     fi
+    $_timerCallback "Closing timer-thread"
   ;;
 esac  
 }
@@ -214,10 +216,11 @@ timer on
 while $testRun; do
   read -n1 -t1 -s
   if [ "$REPLY" == "q" ] || [ "$REPLY" == "Q" ]
-    then timer off; testRun=false
-    else sleep 0.25
+    then testRun=false; else sleep 0.25
   fi
 done
+
+timer off
 log -out "Shuting down in 1.5 sec"; sleep 1.5
 # ============================== END WORK BODY ==============================
 $cfgActive && lock unlock || lock exit

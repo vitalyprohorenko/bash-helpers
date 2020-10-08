@@ -2,7 +2,7 @@
 # ============================================================================
 # Основные настройки logger.2
 _logFile="logfile.txt"				# Имя файла для записи логов
-_logPrefix=" "					# Префикс сообщений
+_logPrefix=""					# Префикс сообщений
 _logDefault=stdout				# Стандартный поток file или stdout
 # ============================================================================
 ##
@@ -23,7 +23,7 @@ _logDefault=stdout				# Стандартный поток file или stdout
 ##
 function log() {
 local _logMsg=""; local _logLine="\n"
-local _logDate="$(date "+%Y-%m-%d %H:%M:%S")"
+local _logDate="$(date "+%Y-%m-%d %H:%M:%S") "
 local _logStd="$_logDefault"
 local _logOFilter='^(f|file|s|stdout)$'
 local _logTPrefix="$_logPrefix"
@@ -37,7 +37,7 @@ while true; do
   case "$1" in
     "-d"|"-date") _logDate=""; shift;;
     "-n"|"-newline") _logLine=""; shift;;
-    "-p"|"-prefix") _logTPrefix="$2"; shift 2;;
+    "-p"|"-prefix") _logTPrefix="$2 "; shift 2;;
     "-o"|"-out")
       if [[ "$2" =~ $_logOFilter ]]
         then shift 2; _logStd="$2"
