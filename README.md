@@ -10,7 +10,7 @@
 
 Находятся в каталоге [`scripts`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/scripts)
 
-Шаблонные скрипты с минимальным наполнением
+Шаблонные скрипты с минимальным наполнением и мини-проекты
 
 <br />
 
