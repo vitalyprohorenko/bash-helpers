@@ -7,3 +7,11 @@
 - <img src="/.img/icon_r.png"/> `service-controller`
 
   Заготовка скрипта-службы
+
+- <img src="/.img/icon_r.png"/> `log-analyzer`
+
+  Анализатор логов
+
+- <img src="/.img/icon_r.png"/> `easy-shell`
+
+  Псевдографическое меню для ssh

@@ -28,11 +28,11 @@
 
   Обработчик шаблонов
 
-- <img src="/.img/icon_r.png"/> `config-ini`
+- <img src="/.img/icon_r.png"/> `ini-helper`
 
   Работа с ini-файлами, считывание и сохранение настроек
 
-- <img src="/.img/icon_r.png"/> `json-parser`
+- <img src="/.img/icon_r.png"/> `json-helper`
 
   Использование строки в формате json как объекта
 
