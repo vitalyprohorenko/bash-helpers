@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Основные настройки
+# Основные настройки async-timer.2
 _timerSleep=1				# Интервал отправки сигнала приложению
 _timerSig=2				# Номер сигнала SIGUSR
 _timerCallback=false			# Функция логирования
@@ -8,8 +8,7 @@ _timerCallback=false			# Функция логирования
 ##
 
 # Внутренние переменные
-_timerPid=0
-unset _timerPExec; unset _timerPTimer; unset _timerPCount
+_timerPid=0; unset _timerPExec; unset _timerPTimer; unset _timerPCount
 declare -A _timerPExec; declare -A _timerPTimer; declare -A _timerPCount
 
 ## Асинхронный таймер

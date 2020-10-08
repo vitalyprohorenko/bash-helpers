@@ -80,7 +80,6 @@ while true; do
 done
 }
 
-#*UPDATE
 # Lock-file controller
 _lockKillSleep=5					# Sleep before 'kill -9' (sec)
 _lockFile="$cfgFileLock"				# Lock-file name
@@ -113,24 +112,61 @@ function lock() {
   esac
 }
 
-#*UPDATE
 # Async timer
 _timerSleep=1						# Send signal interval (sec)
 _timerSig=$(${cfgSecondSig} && echo 2 || echo 1)	# SIGUSR1 or SIGUSR2 select
-_timerPid=0
+_timerCallback=$(${cfgActive} && echo "false" || echo "log -o ")
+# Inner vars
+_timerPid=0; unset _timerPExec; unset _timerPTimer; unset _timerPCount
+declare -A _timerPExec; declare -A _timerPTimer; declare -A _timerPCount
 function timer() {
 case $1 in
-  "on")
-    if [ "$*" != "" ]; then
-      if [ 0$_timerPid -eq 0 ]; then shift
-        eval trap '$*' USR${_timerSig}
-        timer _thread $$ &
-        _timerPid=$!
-      fi
+  "bind")
+    if ! [[ "$2" =~ ^[_a-zA-Z0-9-]+$ ]]
+      then $_timerCallback "Bad id for bind"; return; fi
+    if ! [[ "$3" =~ ^[0-9]+$ ]]
+      then $_timerCallback "Bad timing for bind"; return; fi
+    if ! [[ "$4" =~ ^[_a-zA-Z0-9-]+$ ]]
+      then $_timerCallback "Bad function for bind"; return; fi
+    $_timerCallback "Binding [$2/$3sec] $4"
+    _timerPTimer[$2]="$3"; _timerPExec[$2]="$4"
+  ;;
+  "clear")
+    if [[ "$2" =~ ^[_a-zA-Z0-9-]+$ ]]; then
+      $_timerCallback "Unset $2"
+      unset _timerPExec[$2]; unset _timerPCount[$2]; unset _timerPTimer[$2]
+    else
+      $_timerCallback "Unset all"
+      _timerPExec=(); _timerPCount=(); _timerPTimer=()
     fi
   ;;
-  "off") if [ 0$_timerPid -gt 0 ]; then kill -9 $_timerPid; fi;;
+  "on")
+    if [ 0$_timerPid -eq 0 ]; then shift
+      $_timerCallback "Timer is ON"
+      trap 'timer _worker' USR${_timerSig}
+      timer _thread $$ &
+      _timerPid=$!
+    fi
+  ;;
+  "off")
+    if [ 0$_timerPid -gt 0 ]; then
+      $_timerCallback "Timer is OFF"
+      kill -9 $_timerPid
+      trap - USR${_timerSig}
+      _timerPid=0
+    fi
+  ;;
+  "_worker")
+    for current in ${!_timerPExec[*]}; do
+      (( _timerPCount[$current]+=1 ))
+      if [ 0${_timerPCount[$current]} -ge 0${_timerPTimer[$current]} ]; then
+	[ "${_timerPExec[$current]}" != "" ] && ${_timerPExec[$current]}
+	_timerPCount[$current]=0
+      fi
+    done
+  ;;
   "_thread")
+    $_timerCallback "Starting timer-thread"
     if [[ $2 =~ ^[0-9]+ ]]; then
       while [ $(ps ax | grep -cE "[ ]*$2[ ]+") -ge 1 ]; do
         kill -SIGUSR${_timerSig} $2; sleep $_timerSleep
@@ -173,7 +209,8 @@ $cfgActive && lock
 # ================================ WORK BODY ================================
 $cfgActive && testMessage="Run in active mode" || testMessage="Run in debug mode"
 testRun=true
-timer on testFunction
+timer bind test 2 testFunction
+timer on
 while $testRun; do
   read -n1 -t1 -s
   if [ "$REPLY" == "q" ] || [ "$REPLY" == "Q" ]
