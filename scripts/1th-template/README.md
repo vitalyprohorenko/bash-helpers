@@ -50,11 +50,15 @@
 
 ------
 
+- <img src="/.img/icon_y.png"/> `caroline`
+
+	Исправления кода
+
 - <img src="/.img/icon_g.png"/> `beatrice`
 
 	Добавлен асинхронный таймер, вынесены настройки из функций
 
-- <img src="/.img/icon_y.png"/> `ava` (удалено)
+- <img src="/.img/icon_gr.png"/> `ava` (удалено)
 
 	Первая версия
 
