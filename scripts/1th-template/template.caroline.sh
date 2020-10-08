@@ -6,7 +6,7 @@ cfgActive=false						# Flag for "danger" functions
 cfgFileConf="$cfgDir/settings.cfg"			# Override config file
 cfgFileLog="$cfgDir/logfile.txt"			# Log-file for log() function
 cfgFileLock="$cfgDir/$(basename $0).lock"		# Lock-file for run control
-cfgDirLib="$cfgDir"					# Librarys path
+cfgDirLib="$cfgDir"					# Libraries path
 cfgSecondSig=false					# Use USR2 instead of USR1 for timer
 
 # Help message
