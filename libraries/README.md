@@ -4,7 +4,7 @@
 
   Работа с stdin, считывание клавиш для управления и навигации
 
-- <img src="/.img/icon_g.png"/> [`menu-creator`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/menu-creator)
+- <img src="/.img/icon_b.png"/> [`menu-creator`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/menu-creator)
 
   Создание псевдо-графического меню
 

@@ -1,8 +1,8 @@
 #!/bin/bash
 # ============================================================================
 # Основные настройки async-timer.2
-_timerSleep=1000			# Интервал отправки сигнала приложению (мс)
-_timerSig=2				# Номер сигнала SIGUSR
+_timerSleep=100				# Интервал отправки сигнала приложению (мс*10)
+_timerSig=31				# Номер сигнала
 _timerCallback=false			# Функция логирования
 # ============================================================================
 ##
@@ -14,7 +14,7 @@ declare -A _timerPExec; declare -A _timerPTimer; declare -A _timerPCount
 ## Асинхронный таймер
 ##   timer [off|on callback]
 ##   options:
-##     bind string int functon		- добавить function для выполнения каждые int секунд с идентификатором string
+##     bind string int function		- добавить function для выполнения каждые int секунд с идентификатором string
 ##     unbind [string]			- Отчистить очередь функций или одну функцию если указан идентификатор string
 ##     on|start 			- Включить таймер
 ##     off|stop				- Выключить таймер
@@ -27,22 +27,22 @@ case $1 in
       then $_timerCallback "Bad timing for bind"; return; fi
     if ! [[ "$4" =~ ^[_a-zA-Z0-9-]+$ ]]
       then $_timerCallback "Bad function for bind"; return; fi
-    $_timerCallback "Binding [$2/$3sec] $4"
+    $_timerCallback "Binding $2 [$3] $4"
     _timerPTimer[$2]="$3"; _timerPExec[$2]="$4"
   ;;
   "unbind")
     if [[ "$2" =~ ^[_a-zA-Z0-9-]+$ ]]; then
-      $_timerCallback "Unset $2"
+      $_timerCallback "Unbinding $2"
       unset _timerPExec[$2]; unset _timerPCount[$2]; unset _timerPTimer[$2]
     else
-      $_timerCallback "Unset all"
+      $_timerCallback "Unbinding all"
       _timerPExec=(); _timerPCount=(); _timerPTimer=()
     fi
   ;;
   "on"|"start")
     if [ 0$_timerPid -eq 0 ]; then shift
       $_timerCallback "Timer is ON"
-      trap 'timer _worker' USR${_timerSig}
+      trap 'timer _worker' ${_timerSig}
       timer _thread $$ &
       _timerPid=$!
     fi
@@ -60,7 +60,7 @@ case $1 in
           $_timerCallback "Can't stop and kill timer-thread!"
         fi
       fi
-      trap - USR${_timerSig}
+      trap - ${_timerSig}
       _timerPid=0
     fi
   ;;
@@ -81,9 +81,9 @@ case $1 in
     
     if [[ $2 =~ ^[0-9]+ ]]; then
       while [ $(ps ax | grep -cE "[ ]*$2[ ]+") -ge 1 ] && ! $_timerDisable; do
-        kill -SIGUSR${_timerSig} $2
+        kill -${_timerSig} $2
 	for _timerTi in {1..$_timerSleep}; do
-	  sleep $_timerTSleep 0.001
+	  sleep $_timerTSleep 0.01
           $_timerDisable && break
 	done
       done

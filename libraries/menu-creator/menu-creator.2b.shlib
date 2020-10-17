@@ -1,0 +1,288 @@
+#!/bin/bash
+# ==================================================================================
+# Основные настройки menu-creator.2
+# ВНИМАНИЕ! Модуль использует прерывание SIGWINCH
+_menuSkin=(0 14 0 14 0 7 0 0 14)	# Стандартное оформление
+_menuSpaces="                         " # Строка-заполнитель (влияет на ширину меню)
+_menuBorder=true			# Рамка из 'bg' вокруг меню
+# ==================================================================================
+##
+
+## Направления выравнивания (directions для 'menuSet position')
+##   middle	центр экрана
+##   top	верхняя граница
+##   bottom	нижняя
+##   right	правая
+##   left	левая
+##
+## Типы цветов (офсеты $_menuSkin массива)
+##   № (Тип)
+##   0 (bg) фон
+##   1 (ht) заголовок текст
+##   2 (hb) заголовок фон
+##   3 (nt) активный текст
+##   4 (nb) активный фон
+##   5 (dt) неактивный текст
+##   6 (db) неактивный фон
+##   7 (st) выбранный текст
+##   8 (sb) выбранный фон
+##
+##  Цвета
+##  № Цвет	|№  Цвет	|№ Цвет
+##  0 Чёрный	|7  Серый	|14 Белый
+##  1 Красный	|8  Коралловый	|
+##  2 Зеленый	|9  Салатовый	|
+##  3 Лимонный	|10 Желтый	|
+##  4 Синий	|11 Фиолетовый	|
+##  5 Малиновый	|12 Розовый	|
+##  6 Бирюзовый	|13 Голубой	|
+##
+
+# Внутренние переменные
+_menuHeader=(); _menuBufer=(); _menuAlign=middle; _menuShift=(0 0) 
+_menuWinX=$(tput lines); _menuWinY=$(tput cols); _menuX=0; _menuY=0
+_menuPointer=0
+## Конфигурация меню
+##   menuSet option
+##   options:
+##     color type int			- установить int цвет в type тип шаблона
+##     align direction			- выравнивание окна относительно direction
+##					  обновление при изменении размера окна
+##     shift rows|cols int		- установить сдвиг меню
+##     spaces "string"			- установить строку-заполнитель
+##
+function menuSet() {
+  ${_menuLock[0]} && _menuLock[0]=false || return
+  local tmp
+  case "$1" in
+    "color")
+      if [ $3 -lt 0 ] || [ $3 -gt 14 ]; then return; fi
+      case $2 in
+        "bg"|0) _menuSkin[0]=$3;;
+        "ht"|1) _menuSkin[1]=$3;; "hb"|2) _menuSkin[2]=$3;;
+        "nt"|3) _menuSkin[3]=$3;; "nb"|4) _menuSkin[4]=$3;;
+        "dt"|5) _menuSkin[5]=$3;; "db"|6) _menuSkin[6]=$3;;
+        "st"|7) _menuSkin[7]=$3;; "sb"|8) _menuSkin[8]=$3;;
+        *) return;;
+      esac
+    ;;
+    "align")
+      if [[ "$2" =~ ^m(iddle)?|t(op)?|l(eft)?|r(ight)?|b(ottom)?$ ]]
+        then _menuAlign="$2"; else _menuAlign="middle"; fi
+    ;;
+    "shift")
+      if [[ $3 =~ ^[0-9]+$ ]]; then
+        case $2 in
+          "c"|"cols") _menuShift[0]=$3;;
+          "r"|"rows") _menuShift[1]=$3;;
+        esac
+      fi
+    ;;
+    "spaces") shift; [ -n "$*" ] && _menuSpaces="$*";;
+  esac
+  _menuLock[0]=true
+}
+
+## Добавить или заменить строку в меню или заголовке
+##   menuAdd [header] [@int] string
+##     header				- изменяеть буфер заголовка вместо меню
+##     @int				- указатель на строку, если не указан - добавить в конец
+##     string				- строка
+##
+function menuAdd() {
+    ${_menuLock[1]} && _menuLock[1]=true || return
+  if [[ "$1" =~ ^h(eader)?$ ]]; then local h=true; shift; else local h=false; fi
+  if [[ "$1" =~ ^@[0-9]+$ ]]; then local p="${1:1}"; shift; else local p=-1; fi
+  if [ $p -ge 0 ]
+    then $h && _menuHeader[$p]="$*" || _menuBufer[$p]="$*"
+    else $h && _menuHeader+=("$*") || _menuBufer+=("$*")
+  fi
+  _menuLock[1]=true
+}
+
+## Отобразить меню (по умолчанию без очистки экрана)
+##   menuRefresh [winch|full]
+##     w|winch				- проверить ШхВ окни и перерисовать если изменилось
+##     f|full				- обновить весь экран с отчисткой
+##
+function menuRefresh() {
+  ${_menuLock[2]} && _menuLock[2]=true || return
+  if [ ${#_menuBufer[@]} -gt 0 ] || [ ${#_menuHeader[@]} -gt 0 ]; then
+    local x=$(tput lines); local y=$(tput cols)
+    _menuLocate
+    if [ "$1" == "winch" ]; then
+      if [ "0$x" -ne $_menuWinX ] || [ "0$y" -ne $_menuWinY ]; then
+        _menuShow
+      fi
+    else
+      if [ "$1" == "full" ]
+        then _menuShow clear
+        else _menuShow
+      fi
+    fi
+    _menuWinX=$x; _menuWinY=$y
+  fi
+  _menuLock[2]=true
+}
+
+## Навигация по меню
+##   menuNavi u|d
+##     u|up				- указатель на строку выше
+##     d|down				- указатель на строку ниже
+##
+function menuNavi() { #FIXME
+  ${_menuLock[3]} && _menuLock[3]=true || return
+  if [ ${#_menuBufer[@]} -gt 0 ] || [ ${#_menuHeader[@]} -gt 0 ]; then
+    local i; local ch=0
+    if [ "$1" == "u" ] || [ "$1" == "up" ]; then ch=-1; menuRefresh; fi
+    if [ "$1" == "d" ] || [ "$1" == "down" ]; then ch=1; menuRefresh; fi
+    
+    if [ $ch -ne 0 ]; then
+      i=$_menuPointer
+      while true ; do
+        let "i+=$ch"
+        if [ $i -lt 0 ] || [ $i -ge ${#_menuBufer[@]} ]
+        then menuRefresh; break
+        else
+          if [ ${_menuBufer[$i]:0:1} != "#" ]; then
+            _menuPointer=$i; _menuShow; break
+          fi
+        fi
+      done
+    fi
+  fi
+  _menuLock[3]=true
+}
+
+## Получить текущий выбраный пункт
+##   menuGet n|i
+##     n|name				- вернуть выбранную строку
+##     i|id				- вернуть выбранную позицию
+##
+function menuGet() {
+  case $1 in
+    "name"|"n") echo ${_menuBufer[$_menuPointer]};;
+    "id"|"i") echo $_menuPointer;;
+  esac
+}
+
+## Очистить буфер, при использовании без параметров очищает все буферы
+##   menuClear [header|bufer]
+##     header				- очистка заголовка
+##     bufer				- очистка меню и экрана, остановка таймера
+##
+function menuClear() {
+    ${_menuLock[4]} && _menuLock[4]=true || return
+  if [ "$1" == "" ]; then
+    menuClear header; menuClear bufer
+  else
+    case "$1" in
+      "header") _menuHeader=();;
+      "bufer") _menuBufer=(); _menuPointer=0;;
+    esac
+    if [ ${#_menuBufer[@]} -eq 0 ] || [ ${#_menuHeader[@]} -eq 0 ]; then
+      menuSet refresh winoff
+      menuSet refresh 0
+      sleep 0.2; _menuShow clear only
+    fi
+  fi
+  _menuLock[4]=true
+}
+
+# Вспомогательные функции
+function _menuLocate() {
+  local cX="$(tput cols)"; local cY="$(tput lines)"
+  local cW=0; let cW="${#_menuSpaces}+2"
+  local cH=0; let cH="${#_menuHeader[@]}+${#_menuBufer[@]}+1"
+  # Alignment
+  case "$_menuAlign" in
+    "m"|"middle") let "_menuX=($cX/2)-($cW/2), _menuY=($cY/2)-($cH/2)";;
+    "t"|"top")    let "_menuX=($cX/2)-($cW/2), _menuY=0";;
+    "b"|"bottom") let "_menuX=($cX/2)-($cW/2), _menuY=$cY-$cH";;
+    "l"|"left")   let "_menuX=0, _menuY=($cY/2)-($cH/2)";;
+    "r"|"right")  let "_menuX=$cX-$cW, _menuY=($cY/2)-($cH/2)";;
+  esac
+  # Shifting
+  let "_menuY+=${_menuShift[0]}, _menuY+=${_menuShift[1]}"
+}
+
+function _menuShow() {
+local x; local y; local i; local bgc; local gray; local buf
+
+[ ${_menuSkin[0]} -lt 8 ] && let "bgc=${_menuSkin[0]}+40" || let "bgc=${_menuSkin[0]}+93"
+[ "$1" == "fill" ] && echo -ne "\e[${bgc}m\e[2J"
+[ "$1" == "clear" ] && echo -ne "\e[0m\e[2J"
+[ "$2" == "only" ] && return
+
+# Clear line
+let "y=${_menuY}, x=${_menuX}"
+$_menuBorder && _menuEcho f ${bgc} b ${bgc} x $x y $y \
+  "${_menuSpaces:0:1}${_menuSpaces}${_menuSpaces:0:1}"
+
+# Header
+if [ ${#_menuHeader[@]} -gt 0 ]; then
+  for (( i=0; i<${#_menuHeader[@]}; i++)); do
+    let "y=$_menuY+$i+1, x=${_menuX}"
+    $_menuBorder && _menuEcho f ${bgc} b ${bgc} x $x y $y "${_menuSpaces:0:1}"
+    buf="${_menuHeader[$i]}${_menuSpaces:${#_menuHeader[$i]}}"
+    let "x=${_menuX}+1"; _menuEcho f ${_menuSkin[1]} b ${_menuSkin[2]} x $x y $y "$buf"
+    let "x=${_menuX}+${#_menuSpaces}+1"
+    $_menuBorder && _menuEcho f ${bgc} b ${bgc} x $x y $y "${_menuSpaces:0:1}"
+  done
+fi
+
+# Body
+if [ ${#_menuBufer[@]} -gt 0 ]; then
+  for (( i=0; i<${#_menuBufer[@]}; i++)); do
+    let "y=$_menuY+$i+${#_menuHeader[@]}+1, x=${_menuX}"
+    $_menuBorder && _menuEcho f ${bgc} b ${bgc} x $x y $y "${_menuSpaces:0:1}"
+    
+    let "x=${_menuX}+1"
+    if [ "${_menuBufer[$i]:0:1}" == "#" ]; then gray=true; else gray=false; fi
+    if $gray; then  
+      buf="${_menuBufer[$i]:1}"; buf="${buf}${_menuSpaces:${#buf}}"
+      _menuEcho f ${_menuSkin[5]} b ${_menuSkin[6]} x $x y $y "$buf"
+    else
+      buf="${_menuBufer[$i]}${_menuSpaces:${#_menuBufer[$i]}}"
+      if [ $i -eq $_menuPointer ]
+        then _menuEcho f ${_menuSkin[7]} b ${_menuSkin[8]} x $x y $y "${buf}"
+        else _menuEcho f ${_menuSkin[3]} b ${_menuSkin[4]} x $x y $y "${buf}"
+      fi
+    fi
+    let "x=${_menuX}+${#_menuSpaces}+1"
+    $_menuBorder && _menuEcho f ${bgc} b ${bgc} x $x y $y "${_menuSpaces:0:1}"
+  done
+fi
+}
+
+function _menuEcho() {
+local cB=-1; local cF=-1; local cX=-1; local cY=-1
+local color=""; local position=""
+while true; do
+  if [[ $2 =~ ^[0-9]+$ ]]; then
+    case $1 in
+      "f"|"fore") if [ $2 -lt 8 ]; then let "cF=$2+30"; else let "cF=$2+83"; fi; shift 2;;
+      "b"|"back") if [ $2 -lt 8 ]; then let "cB=$2+40"; else let "cB=$2+93"; fi; shift 2;;
+      "x") cX=$2; shift 2;; "y") cY=$2; shift 2;; *)break;;
+    esac
+  else break
+  fi
+done
+
+if [ $cX -ge 0 ] && [ $cY -ge 0 ]; then position="\e[${cY};${cX}f"; fi
+
+if [ $cF -ge 0 ] || [ $cB -ge 0 ]; then
+  color="\e["
+    if [ $cF -ge 0 ]; then color+="$cF"; fi
+    if [ $cF -ge 0 ] && [ $cB -ge 0 ]; then color+=";"; fi
+    if [ $cB -ge 0 ]; then color+="$cB"; fi
+  color+="m"
+fi
+
+echo -ne "\e[s"				# Save cursor position
+echo -ne "${position}"			# Positioning
+echo -ne "${color}"			# Set color
+echo -n "${*}"				# Print line
+echo -ne "\e[0m"			# Restore color
+echo -ne "\e[u"				# Restore cursor position
+}
