@@ -20,7 +20,7 @@
 
   Облегчённая работа с .lock файлом
 
-- <img src="/.img/icon_r.png"/> `lib-loader`
+- <img src="/.img/icon_y.png"/> [`lib-loader`](https://github.com/vitalyprohorenko/bash-helpers/tree/master/libraries/lib-loader)
 
   Автоматический загрузчик библиотек по файлу зависимостей
 

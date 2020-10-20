@@ -1,0 +1,178 @@
+#!/bin/bash
+# ============================================================================
+# Основные настройки @lib-loader.1
+_llDebug=false
+_llWay=store				# Пути загрузки web|local|store
+_llIterocal="$PWD"			# Локальное и удаленное хранилище
+_llRemote="https://raw.githubusercontent.com/vitalyprohorenko/bash-helpers/master/libraries"
+_llFileTemp="temp_downloaded"		# Временный файл для скаченных данных
+_llCallback=echo			# Функция логирования
+_llDepFile="relation.ll"		# Файл с зависимостями
+# ============================================================================
+##
+
+## Автоматическая загрузка библиотек по файлу зависимостей
+##   _llWay если указан 'web' - библиотеки грузятся из интернета,
+##   если указан 'local' - используются локальные файлы
+##   если указан 'store' - пытается загрузить локально, если не получается
+##   загружает из интернета и сохраняет локальную копию
+## Если присвоить значения массиву _llArray, то файл зависимостей
+## будет проигнорирован и загружены библиотеки по списку из массива
+
+# Внутренние проверки и переменные
+[ $( which curl | grep -cE "no curl in" ) -eq 0 ] \
+  && _llCurlDisabled=false || _llCurlDisabled=true
+_llRegexpVersion='^[0-9]+[b]?$'; _llRegexCName='[-a-z0-9]+\.[0-9]+[b]?'
+_llLoadFail=0
+
+function _llLoad() {
+  _llLoadFail=1
+  if [ -n "$1" ]; then
+    local _llValResult; local _llFilename="${_llIterocal}/${1}.shlib"
+    $_llCallback "  Loading file ${1}.shlib"
+    _llValResult=$(_llValidate "$_llFilename")
+    if [ 0$_llValResult -eq 1 ]; then
+      source "$_llFilename"
+      $_llCallback "  Loaded!"
+      _llLoadFail=-1
+    else
+      case "$_llValResult" in
+        0) $_llCallback "  Empty function argument";;
+        2) $_llCallback "  Can't read file";;
+	3) $_llCallback "  Zero file length";;
+	4) $_llCallback "  File not found";;
+      esac
+    fi
+  fi
+}
+
+function _llDownload() {
+  _llLoadFail=1
+  if $_llCurlDisabled; then $_llCallback "Curl not found on your system"; return; fi
+  _llTmpFile="${_llIterocal}/${_llFileTemp}.shlib"
+  if [ -n "$1" ]; then
+    if [[ "$2" =~ $_llRegexpVersion ]]; then
+      $_llCallback "  Downloading $1 (ver.$2)"
+      [ -e "$_llTmpFile" ] && rm -f -- "$_llTmpFile"
+      curl -f -g -s --output "$_llTmpFile" "${_llRemote}/${1}/${1}.${2}.shlib"
+      if [ -r "$_llTmpFile" ] && [ -s "$_llTmpFile" ]
+        then $_llCallback "  Downloaded!"; _llLoadFail=-1
+        else rm -f "$_llTmpFile"; $_llCallback "- Can't download or read file"
+      fi
+    else
+      if [ -z "$2" ]; then
+        $_llCallback "  Check for last version"; _llDVersion=stable 
+      else
+        $_llCallback "  Check for $2 version"; _llDVersion=$2
+      fi
+      local _llCver="$( \
+        _llIternfo $1 \
+        | grep -E "^${_llDVersion}" \
+        | awk -F ':' '{print $2}' \
+      )"
+      if [[ "$_llCver" =~ $_llRegexpVersion ]]
+        then _llDownload "$1" "$_llCver"
+        else $_llCallback "  Unknown version ($_llCver)"
+      fi
+    fi
+  fi
+}
+
+function _llStore() {
+  if [ "$1" == "clean" ]; then
+    rm -f "${_llIterocal}/${_llFileTemp}.shlib"
+    $_llCallback "  Local-temp cleaned"
+    return
+  fi
+  if [ -r "${_llIterocal}/${1}.shlib" ]; then
+    _llTmpName="$(cat "${_llIterocal}/${1}.shlib" | \
+                 head -n 3 | grep -iE "^# .* @$_llRegexCName$" | \
+                 awk -F "@" '{print $2}')"
+    _llTmpName="$(echo $_llTmpName | awk -F "." '{print $2}')"
+    echo "$_llTmpName"
+    return
+  fi
+  if [ -r "${_llIterocal}/${_llFileTemp}.shlib" ] && [ -z "$1" ]; then
+    _llTmpName="$(cat "${_llIterocal}/${_llFileTemp}.shlib" | \
+                 head -n 3 | grep -iE "^# .* @$_llRegexCName$" | \
+                 awk -F "@" '{print $2}')"
+    _llTmpName="$(echo $_llTmpName | awk -F "." '{print $1}')"
+    mv -f "${_llIterocal}/${_llFileTemp}.shlib" "${_llIterocal}/${_llTmpName}.shlib"
+    $_llCallback "  Stored local (${_llTmpName}.shlib)"
+  fi
+}
+
+function _llIternfo() {
+  if [ -n "$1" ]; then
+    curl --fail --globoff --silent "${_llRemote}/${1}/${1}.ll"
+  else
+    curl --fail --globoff --silent "${_llRemote}/catalog.ll"
+  fi
+}
+
+function _llValidate() {
+  if [ -n "$1" ]
+    then if [ -e "$1" ]
+      then if [ -s "$1" ]
+        then if [ -r "$1" ]
+	  then 
+	    echo "1" # All good
+	    
+	  else echo "2" # Can't read
+	fi
+      else echo "3"; fi # Zero file len
+    else echo "4"; fi # Not found
+  else echo "0"; fi # Empty argument
+}
+
+# ============================================================================
+$_llDebug && function _llD() {
+  declare -a | grep -iE "declare -[-af]+ _ll"
+  declare -F | grep -iE "declare -[-af]+ _ll"
+  declare -p | grep -iE "declare -[-af]+ _ll"
+}
+$_llDebug && return
+
+$_llCallback "Automatic library loader (mode:${_llWay})"
+if [ ${#_llArray[@]} -eq 0 ] && [ -r "$_llDepFile" ]; then
+  $_llCallback "Open relation list"
+  _llArray=($(cat "$_llDepFile" | grep -iE "$_llRegexCName"))
+else
+  $_llCallback "Take items from array"
+fi
+$_llCallback "Loading ${#_llArray[@]} items"
+
+for _llIter in ${_llArray[@]}; do
+  _llIter="$(echo "$_llIter" | tr -d '\r\n')"
+  $_llCallback "Library [${_llIter}]"
+  if [[ "$_llWay" =~ ^(store|local)$ ]]; then
+    if [ "$(_llStore $(echo "$_llIter" | tr "." " "))" == \
+         "$(echo "$_llIter" | awk -F "." '{print $2}')" ]
+      then _llLoad $(echo "$_llIter" | tr "." " ")
+      else $_llCallback "  Fail loading"; _llLoadFail=1
+    fi
+  fi
+  
+  if [[ "$_llWay" =~ ^(web|store)$ ]]; then
+    if [ $_llLoadFail -ge 0 ]; then
+      _llDownload $(echo "$_llIter" | tr "." " ")
+      if [ $_llLoadFail -le 0 ]; then
+        if [[ "$_llWay" =~ ^(store)$ ]]; then
+          _llStore
+          _llLoad $(echo "$_llIter" | tr "." " ")
+        else
+          _llLoad $_llFileTemp
+	  _llStore clean
+        fi
+        _llLoadFail=0
+      fi
+      _llLoadFail=0
+    fi
+  fi
+done
+$_llCallback "Complete!"
+_llStore clean
+_ll=($(declare -a | grep -iE "^declare -[-af]+ _ll" | tr " " "=" | awk -F "=" '{print $3}'))
+_ll+=($(declare -F | grep -iE "^declare -[-af]+ _ll" | tr " " "=" | awk -F "=" '{print $3}'))
+_ll+=($(declare -p | grep -iE "^declare -[-af]+ _ll" | tr " " "=" | awk -F "=" '{print $3}'))
+for _llIter in ${_ll[@]}; do unset $_llIter; done; unset _ll; unset _llIter
