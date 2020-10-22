@@ -12,10 +12,12 @@ _timerPid=0; unset _timerPExec; unset _timerPTimer; unset _timerPCount
 declare -A _timerPExec; declare -A _timerPTimer; declare -A _timerPCount
 
 ## Асинхронный таймер
-##   timer [off|on callback]
+##   timer on|off|bind|unbind
 ##   options:
-##     bind string int function		- добавить function для выполнения каждые int секунд с идентификатором string
-##     unbind [string]			- Отчистить очередь функций или одну функцию если указан идентификатор string
+##     bind string int function		- добавить function для выполнения каждые
+##					  int секунд с идентификатором string
+##     unbind [string]			- Отчистить очередь функций
+##					  или одну функцию если указан идентификатор string
 ##     on|start 			- Включить таймер
 ##     off|stop				- Выключить таймер
 function timer() {

@@ -5,9 +5,9 @@ _llDebug=false
 _llWay=store				# Пути загрузки web|local|store
 _llIterocal="$PWD"			# Локальное и удаленное хранилище
 _llRemote="https://raw.githubusercontent.com/vitalyprohorenko/bash-helpers/master/libraries"
-_llFileTemp="temp_downloaded"		# Временный файл для скаченных данных
+_llFileTemp="_downloaded"		# Временный файл для скаченных данных
 _llCallback=echo			# Функция логирования
-_llDepFile="relation.ll"		# Файл с зависимостями
+_llDepFile="relation"			# Файл с зависимостями
 # ============================================================================
 ##
 
@@ -134,9 +134,9 @@ $_llDebug && function _llD() {
 $_llDebug && return
 
 $_llCallback "Automatic library loader (mode:${_llWay})"
-if [ ${#_llArray[@]} -eq 0 ] && [ -r "$_llDepFile" ]; then
+if [ ${#_llArray[@]} -eq 0 ] && [ -r "${_llDepFile}.ll" ]; then
   $_llCallback "Open relation list"
-  _llArray=($(cat "$_llDepFile" | grep -iE "$_llRegexCName"))
+  _llArray=($(cat "${_llDepFile}.ll" | grep -iE "$_llRegexCName"))
 else
   $_llCallback "Take items from array"
 fi

@@ -4,17 +4,20 @@
 # ВНИМАНИЕ! Модуль использует прерывание SIGWINCH
 _menuSkin=(0 14 0 14 0 7 0 0 14)	# Стандартное оформление
 _menuSpaces="                         " # Строка-заполнитель (влияет на ширину меню)
+_menuAlign=middle			# Выравнивание окна
+_menuShift=(0 0)			# Сдвиг окна (x y)
 _menuBorder=true			# Рамка из 'bg' вокруг меню
 # ==================================================================================
 ##
 
-## Направления выравнивания (directions для 'menuSet position')
+## Направления выравнивания (directions для 'menuSet align')
 ##   middle	центр экрана
 ##   top	верхняя граница
 ##   bottom	нижняя
 ##   right	правая
 ##   left	левая
 ##
+
 ## Типы цветов (офсеты $_menuSkin массива)
 ##   № (Тип)
 ##   0 (bg) фон
@@ -39,9 +42,9 @@ _menuBorder=true			# Рамка из 'bg' вокруг меню
 ##
 
 # Внутренние переменные
-_menuHeader=(); _menuBufer=(); _menuAlign=middle; _menuShift=(0 0) 
-_menuWinX=$(tput lines); _menuWinY=$(tput cols); _menuX=0; _menuY=0
-_menuPointer=0
+_menuHeader=(); _menuBufer=(); _menuPointer=0 ; _menuX=0; _menuY=0
+_menuWinX=$(tput lines); _menuWinY=$(tput cols)
+
 ## Конфигурация меню
 ##   menuSet option
 ##   options:
@@ -130,7 +133,7 @@ function menuRefresh() {
 ##     u|up				- указатель на строку выше
 ##     d|down				- указатель на строку ниже
 ##
-function menuNavi() { #FIXME
+function menuNavi() {
   ${_menuLock[3]} && _menuLock[3]=true || return
   if [ ${#_menuBufer[@]} -gt 0 ] || [ ${#_menuHeader[@]} -gt 0 ]; then
     local i; local ch=0
