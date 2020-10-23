@@ -1,12 +1,11 @@
 #!/bin/bash
 # =============================== WORK HEADER ===============================
 # Configuration
-cfgDir="$PWD"
 cfgActive=false						# Flag for "danger" functions
-cfgFileConf="$cfgDir/settings.cfg"			# Override config file
-cfgFileLog="$cfgDir/logfile.txt"			# Log-file for log() function
-cfgFileLock="$cfgDir/$(basename $0).lock"		# Lock-file for run control
-cfgDirLib="$cfgDir"					# Libraries path
+cfgFileConf="$PWD/settings.cfg"				# Override config file
+cfgFileLog="$PWD/logfile.txt"				# Log-file for log() function
+cfgFileLock="$PWD/$(basename $0).lock"			# Lock-file for run control
+cfgDirLib="$PWD"					# Libraries path
 cfgSecondSig=false					# Use USR2 instead of USR1 for timer
 
 # Help message

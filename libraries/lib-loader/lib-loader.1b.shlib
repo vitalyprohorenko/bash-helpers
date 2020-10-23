@@ -3,7 +3,7 @@
 # Основные настройки @lib-loader.1
 _llDebug=false
 _llWay=store				# Пути загрузки web|local|store
-_llIterocal="$PWD"			# Локальное и удаленное хранилище
+#_llLocal="$PWD"			# Локальное и удаленное хранилище
 _llRemote="https://raw.githubusercontent.com/vitalyprohorenko/bash-helpers/master/libraries"
 _llFileTemp="_downloaded"		# Временный файл для скаченных данных
 _llCallback=echo			# Функция логирования
@@ -28,7 +28,7 @@ _llLoadFail=0
 function _llLoad() {
   _llLoadFail=1
   if [ -n "$1" ]; then
-    local _llValResult; local _llFilename="${_llIterocal}/${1}.shlib"
+    local _llValResult; local _llFilename="${_llLocal}/${1}.shlib"
     $_llCallback "  Loading file ${1}.shlib"
     _llValResult=$(_llValidate "$_llFilename")
     if [ 0$_llValResult -eq 1 ]; then
@@ -49,7 +49,7 @@ function _llLoad() {
 function _llDownload() {
   _llLoadFail=1
   if $_llCurlDisabled; then $_llCallback "Curl not found on your system"; return; fi
-  _llTmpFile="${_llIterocal}/${_llFileTemp}.shlib"
+  _llTmpFile="${_llLocal}/${_llFileTemp}.shlib"
   if [ -n "$1" ]; then
     if [[ "$2" =~ $_llRegexpVersion ]]; then
       $_llCallback "  Downloading $1 (ver.$2)"
@@ -66,7 +66,7 @@ function _llDownload() {
         $_llCallback "  Check for $2 version"; _llDVersion=$2
       fi
       local _llCver="$( \
-        _llIternfo $1 \
+        _llInfo $1 \
         | grep -E "^${_llDVersion}" \
         | awk -F ':' '{print $2}' \
       )"
@@ -80,29 +80,29 @@ function _llDownload() {
 
 function _llStore() {
   if [ "$1" == "clean" ]; then
-    rm -f "${_llIterocal}/${_llFileTemp}.shlib"
+    rm -f "${_llLocal}/${_llFileTemp}.shlib"
     $_llCallback "  Local-temp cleaned"
     return
   fi
-  if [ -r "${_llIterocal}/${1}.shlib" ]; then
-    _llTmpName="$(cat "${_llIterocal}/${1}.shlib" | \
+  if [ -r "${_llLocal}/${1}.shlib" ]; then
+    _llTmpName="$(cat "${_llLocal}/${1}.shlib" | \
                  head -n 3 | grep -iE "^# .* @$_llRegexCName$" | \
                  awk -F "@" '{print $2}')"
     _llTmpName="$(echo $_llTmpName | awk -F "." '{print $2}')"
     echo "$_llTmpName"
     return
   fi
-  if [ -r "${_llIterocal}/${_llFileTemp}.shlib" ] && [ -z "$1" ]; then
-    _llTmpName="$(cat "${_llIterocal}/${_llFileTemp}.shlib" | \
+  if [ -r "${_llLocal}/${_llFileTemp}.shlib" ] && [ -z "$1" ]; then
+    _llTmpName="$(cat "${_llLocal}/${_llFileTemp}.shlib" | \
                  head -n 3 | grep -iE "^# .* @$_llRegexCName$" | \
                  awk -F "@" '{print $2}')"
     _llTmpName="$(echo $_llTmpName | awk -F "." '{print $1}')"
-    mv -f "${_llIterocal}/${_llFileTemp}.shlib" "${_llIterocal}/${_llTmpName}.shlib"
+    mv -f "${_llLocal}/${_llFileTemp}.shlib" "${_llLocal}/${_llTmpName}.shlib"
     $_llCallback "  Stored local (${_llTmpName}.shlib)"
   fi
 }
 
-function _llIternfo() {
+function _llLnfo() {
   if [ -n "$1" ]; then
     curl --fail --globoff --silent "${_llRemote}/${1}/${1}.ll"
   else
